@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- File transfer size: 6.4KB
+       Load time: 4.30s
+       DOM:2.16s
+  -->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Sections, Style and Meta Data">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Watch</title>
+  <meta name="theme-color" content="#8bc34a" />
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body>
+  <script src="../firebase.js"></script>
+  <script src="../firebase-firestore.js"></script>
+  <div class="header">
+    <h1>Team Watch</h1>
+  </div>
+  <table id="header-table">
+    <tr>
+      <td class="header-td">
+        <a class="header-link" href="../index.html"> Home </a>
+      </td>
+      <td class="header-td active">
+        <a class="header-link" href="#"> Game </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../player/player_list.html"> Player </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../manage/view_profile.html"> Manage </a>
+      </td>
+    </tr>
+  </table>
+
+  <div id="addGameWrapper" hidden>
+    <button class="button add-button" id="addGame" onclick="location.href='add_game.html'">Add A Game</button>
+    <br />
+    <br />
+    <br />
+    <hr />
+  </div>
+  <div id="noGamesWrapper" hidden>
+    <br />
+    <h2 class="center">No games yet!</h2>
+  </div>
+  <div id="todaysGameDetails" hidden>
+    <div class="game-info center">
+      <p class="game-title">Today's Game</p>
+      <div id="todayGameWrapper">
+      </div>
+      <br/>
+    </div>
+    <hr />
+  </div>
+  <div id="nextGameDetails" hidden>
+    <div id="next-games-wrapper">
+      <div class="game-info center">
+        <br/>
+        <p class="game-title">Upcoming Games</p>
+        <div id="nextGameWrapper">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="prevGameDetails" hidden>
+    <hr />
+    <div class="game-info center">
+      <p class="game-title">Previous Game</p>
+      <div id="prevGameWrapper">
+      </div>
+      <br/>
+    </div>
+    <hr />
+  </div>
+  <script>
+    function getDateStr(date) {
+      var monthNames = new Array("January", "February", "March",
+        "April", "May", "June", "July", "August", "September",
+        "October", "November", "December");
+      var cDate = date.getDate();
+      var cMonth = date.getMonth();
+      var cYear = date.getFullYear();
+      var cHour = date.getHours();
+      var cMin = date.getMinutes();
+      var cSec = date.getSeconds();
+      var ampm = cHour >= 12 ? 'pm' : 'am';
+      cHour = cHour % 12;
+      cHour = cHour ? cHour : 12; // the hour '0' should be '12'
+      cMin = cMin < 10 ? '0' + cMin : cMin;
+      return (monthNames[cMonth] + " " + cDate + ", " + cYear + " " + cHour + ":" + cMin + ' ' + ampm);
+    }
+
+    function showAddGameButton(usertype) {
+      if (usertype == "coach") {
+        document.getElementById("addGameWrapper").hidden = false;
+      }
+    }
+
+    function editGame(id, cid, uid) {
+      if (usertype == "coach") {
+        localStorage.setItem('coachuid', cid);
+        localStorage.setItem('gameId', id);
+        location.href = 'edit_game.html';
+      }
+    }
+
+    function editStats(id, cid) {
+      if (usertype == "coach" || usertype == "parent") {
+        localStorage.setItem('coachuid', cid);
+        localStorage.setItem('gameId', id);
+        location.href = 'edit_stats.html';
+      }
+    }
+
+    function viewStats(id, cid) {
+      localStorage.setItem('coachuid', cid);
+      localStorage.setItem('gameId', id);
+      location.href = 'view_stats.html';
+    }
+  </script>
+  <script src="../init.js"></script>
+  <script>
+    var db = firebase.firestore();
+    firebase.firestore().enablePersistence()
+      .catch(function (err) {
+        console.log(err);
+      });
+    var usertype = null;
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        db.collection("users").doc(user.uid).get().then(function (querySnapshot) {
+          var groupKey = querySnapshot.data().groupKey;
+          var preURL = 'teams/' + groupKey + '/';
+          usertype = querySnapshot.data().usertype;
+          showAddGameButton(usertype);
+          db.collection(preURL + "gameSchedule/").get().then(function (querySnapshot) {
+            var games = querySnapshot.docs;
+            if (!games) {
+              document.getElementById("noGamesWrapper").hidden = false;
+            } else {
+              querySnapshot.forEach(function (doc) {
+                var game = doc.data();
+                game.key = doc.id;
+                game.dateObj = new Date(game.date * 1000);
+                bucketGamesAndDisplay(game, groupKey, user.uid);
+              });
+            }
+          });
+        });
+      } else {
+        location.href = '../login.html';
+      }
+    });
+
+    function bucketGamesAndDisplay(game, groupKey, uid) {
+      var extraContent = "";
+      var currDate = new Date();
+      var currDateTS = Math.round(currDate.getTime() / 1000);
+      if (game.dateObj.getFullYear() == currDate.getFullYear()
+        && game.dateObj.getMonth() == currDate.getMonth()
+        && game.dateObj.getDate() == currDate.getDate()) {
+        document.getElementById("todaysGameDetails").hidden = false;
+        wrapper = document.querySelector("#todayGameWrapper");
+
+        // check if stats were submitted for this game already, if they have show the view stats button
+        if (game.homeGoals == undefined) {
+          extraContent = '<td><button id="editstats" onclick="editStats(\'' + game.key + '\',\'' + groupKey + '\')" class="stats-button">Add Stats Live</button></button></td>';
+        } else {
+          extraContent = '<td><button id="viewStats" class="stats-button" onclick="viewStats(\'' + game.key + '\',\'' + groupKey + '\')">View Stats \ </button></td>';
+        }
+      } else if (currDateTS > game.date) {
+        document.getElementById("prevGameDetails").hidden = false;
+        wrapper = document.querySelector("#prevGameWrapper");
+        extraContent = '<td><button id="viewStats" class="stats-button" onclick="viewStats(\'' + game.key + '\',\'' + groupKey + '\');">View Stats \
+          </button></td>';
+      } else if (currDateTS < game.date) {
+        document.getElementById("nextGameDetails").hidden = false;
+        var wrapper = document.querySelector("#nextGameWrapper");
+      }
+      populateGame(wrapper, game, extraContent, groupKey, uid);
+    }
+
+    function populateGame(wrapper, game, extraContent, groupKey, uid) {
+      var div = document.createElement("div");
+      var date = getDateStr(game.dateObj);
+      div.innerHTML = '<table class="stats-actions"> <tr>' + extraContent + '<td> \
+      <a class="editNextGame" href="javascript:editGame(\'' + game.key + '\',\'' + groupKey + '\',\'' + uid + '\')"> \
+      <img style="margin-top: 1vh;" width=25 height=25 src="../images/edit2.png" alt="edit"> </a> </td> </tr> </table>\
+      <div class="game-info center"> \
+      <p id="timeOfNextGame' + game.key + '">' + date + '</p> \
+      <p id="locOfNextGame' + game.key + '">' + game.loc + '</p> \
+      <p id="opponentOfNextGame' + game.key + '">' + game.oppTeam + '</p> \
+      <p id="homeOrAwayNextGame' + game.key + '">' + game.homeOrAway + '</p> <br/> </div>';
+      wrapper.appendChild(div);
+    }
+  </script>
+</body>
+</html>

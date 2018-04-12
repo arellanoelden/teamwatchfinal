@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Sections, Style and Meta Data">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Watch</title>
+  <meta name="theme-color" content="#8bc34a" />
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body>
+  <script src="../firebase.js"></script>
+  <script src="../firebase-firestore.js"></script>
+  <!--<script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCfMC6E9eNfRbX7Zy--2UFkJkn3ffpgji8",
+      authDomain: "cse134bfinal.firebaseapp.com",
+      databaseURL: "https://cse134bfinal.firebaseio.com",
+      projectId: "cse134bfinal",
+      storageBucket: "cse134bfinal.appspot.com",
+      messagingSenderId: "329284980436"
+    };
+    firebase.initializeApp(config);
+    // If the user is logged in, redirect to home page.
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (!user) {
+        location.href = '../login.html';
+      }
+    });
+    var database = firebase.database();
+    var db = firebase.firestore();
+  </script>-->
+  <div class="header">
+    <h1>Team Watch</h1>
+  </div>
+  <table id="header-table">
+    <tr>
+      <td class="header-td">
+        <a class="header-link" href="../index.html"> Home </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../game/game_schedule.html"> Game </a>
+      </td>
+      <td class="header-td active">
+        <a class="header-link" href="../player/player_list.html"> Player </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../manage/view_profile.html"> Manage </a>
+      </td>
+    </tr>
+  </table>
+  <script>
+    var loadfile = function (event) {
+      var output = document.getElementById('profile_pic');
+      output.src = URL.createObjectURL(event.target.files[0]);
+    };
+  </script>
+  <table class="playerinfo">
+    <tr>
+      <td>
+        <img src="../images/profilepic.jpg" alt="profile pic" id="profile_pic">
+      </td>
+      <td>
+        <input onchange="loadfile(event)" style="border-radius:0.25rem;" type="file" value="Add a photo" class="button" id="addphoto">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>First Name:</label>
+      </td>
+      <td>
+        <input type="text" name="fname" id="fname">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Last Name:</label>
+      </td>
+      <td>
+        <input type="text" name="lname" id="lname">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Email Name:</label>
+      </td>
+      <td>
+        <input type="text" name="email" id="email">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Date of Birth:</label>
+      </td>
+      <td>
+        <input type="text" name="DOB" id="DOB">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Jersey Number:</label>
+      </td>
+      <td>
+        <input type="text" name="jersey" id="number">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Position:</label>
+      </td>
+      <td>
+        <input type="text" name="position" id="position">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Captain:</label>
+      </td>
+      <td>
+        <select id="captain" name="captain">
+          <option id="coption">Yes</option>
+          <option id="coption">No</option>
+        </select>
+      </td>
+    </tr>
+  </table>
+  <div class="center" style="border-radius:0.25rem;">
+    <input style="border-radius:0.25rem; width:21rem;" type="submit" value="Save" id="editPlayer" class="button" onclick="location.href='player_list.html'">
+  </div>
+  <div id="deletePlayerWrapper" hidden class="center" style="border-radius:0.25rem;">
+    <input style="border-radius:0.25rem;" type="submit" value="Delete" id="deletePlayer" class="redbutton" onclick="location.href='player_list.html'">
+  </div>
+  <script src="../init.js"></script>
+  <script>
+    var db = firebase.firestore();
+    firebase.firestore().enablePersistence()
+      .catch(function (err) {
+        console.log(err);
+      });
+    function uploadPlayerInfo(playerInfo, uid) {
+      db.collection("teams/" + uid + "/playerlist/").doc(localStorage.getItem("playerId")).update({
+        name: playerInfo.name,
+        fname: playerInfo.fname,
+        lname: playerInfo.lname,
+        email: playerInfo.email,
+        DOB: playerInfo.DOB,
+        number: playerInfo.number,
+        position: playerInfo.position,
+        profile_pic: playerInfo.profile_pic,
+        captain: playerInfo.captain
+      }).then(function () {
+        location.href = 'player_list.html';
+      });
+    }
+    function writePlayerData(playerInfo, uid) {
+      var user = firebase.auth().currentUser;
+      var file = document.getElementById("addphoto").files;
+      var ref = firebase.storage().ref();
+      if (file.length == 1) {
+        ref.child(localStorage.getItem("playerId")).put(file[0])
+          .then(function (snapshot) {
+            ref.child(localStorage.getItem("playerId")).getDownloadURL().then(function (url) {
+              playerInfo.profile_pic = url;
+              uploadPlayerInfo(playerInfo, uid);
+            });
+          });
+      }
+      else {
+        uploadPlayerInfo(playerInfo, uid);
+        location.href = 'player_list.html';
+      }
+    }
+    function deletePlayer(uid) {
+      db.collection("teams/" + uid + "/playerlist/").doc(localStorage.getItem("playerId")).delete().then(function () {
+        // console.log("Document successfully deleted!");
+      }).then(function (error) {
+        location.href = "player_list.html";
+      }).catch(function (error) {
+        // console.error("Error removing document: ", error);
+      });
+
+      //var playerlist = firebase.database().ref("teams/" + uid + "/playerlist/");
+      //console.log(playerlist);
+      //playerlist.child(localStorage.getItem("playerid")).remove();
+    }
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (!user) {
+        location.href = '../login.html';
+      }
+      showDeletePlayerButton(user.uid);
+      db.collection("teams/" + user.uid + "/playerlist/").doc(localStorage.getItem("playerId")).get().then(function (querySnapshot) {
+        var player = querySnapshot.data();
+        var id = "";
+        var inputs = document.querySelectorAll(".playerinfo tr td:nth-child(2) > :first-child");
+        var names = document.querySelectorAll(".playerinfo tr td img");
+        for (var i = 0; i < inputs.length; i++) {
+          if (inputs[i].hasAttribute("id") && player[inputs[i].getAttribute("id")]) {
+            id = inputs[i].getAttribute("id");
+            if (id == "captain") {
+              var options = document.querySelectorAll("#captain option");
+              for (var j = 0; j < options.length; j++) {
+                if (options[j].textContent == player[id]) {
+                  options[j].setAttribute("selected", true);
+                  break;
+                }
+              }
+            }
+            else {
+              inputs[i].setAttribute("value", player[id]);
+            }
+          }
+        }
+        for (var i = 0; i < names.length; i++) {
+          if (names[i].hasAttribute("id") && player[names[i].getAttribute("id")]) {
+            id = names[i].getAttribute("id");
+            names[i].textContent = player[id];
+          }
+        }
+        fillInPicture(player);
+        document.getElementById("editPlayer").onclick = function () {
+          var playerInfo = {
+            "fname": "",
+            "lname": "",
+            "email": "",
+            "DOB": "",
+            "number": "",
+            "position": "",
+            "name": "",
+            "captain": ""
+          };
+          playerInfo.fname = document.getElementById("fname").value;
+          playerInfo.lname = document.getElementById("lname").value;
+          playerInfo.email = document.getElementById("email").value;
+          playerInfo.DOB = document.getElementById("DOB").value;
+          playerInfo.number = document.getElementById("number").value;
+          playerInfo.position = document.getElementById("position").value;
+          playerInfo.name = document.getElementById("fname").value + " " + document.getElementById("lname").value;
+          playerInfo.profile_pic = player.profile_pic;
+          var captainOptions = document.querySelectorAll("#coption");
+          for (var i = 0; i < captainOptions.length; i++) {
+            if (captainOptions[i].selected) {
+              playerInfo.captain = captainOptions[i].value;
+            }
+          }
+          var newPlayerInfo = playerInfo;
+          writePlayerData(playerInfo, user.uid);
+        }
+        document.getElementById("deletePlayer").onclick = function () {
+          deletePlayer(user.uid);
+        }
+      });
+
+    });
+    function fillInPicture(player) {
+      if (player.profile_pic) {
+        var img = document.getElementById('profile_pic');
+        img.src = player.profile_pic;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,565 @@
+{
+  "groups" : {
+    "-L-UByEMyMM5_lBfC4HN" : {
+      "coachEmail" : "tina@ucsd.edu",
+      "coachuid" : "29DJb9zSBzO9r9Hq1pcMCB8vG2z2",
+      "parentPassword" : "test",
+      "playerPassword" : "test",
+      "teamName" : "Team Tina"
+    },
+    "6WkvtYphEGOh5gfsCjoJXlfdug53" : {
+      "coachEmail" : "p@ucsd.edu",
+      "parentPassword" : "t",
+      "playerPassword" : "t",
+      "teamName" : "Team P"
+    },
+    "7lLAG99OXcU4FiQ6BqgZyUroOLa2" : {
+      "coachEmail" : "b@ucsd.edu",
+      "parentPassword" : "test",
+      "playerPassword" : "test",
+      "teamName" : "Team A"
+    },
+    "EjSSkfXcCrd88CJY0RSfAlu7cct2" : {
+      "coachEmail" : "f@ucsd.edu",
+      "parentPassword" : "test",
+      "playerPassword" : "test",
+      "teamName" : "Team F"
+    },
+    "FTR9OW2DtbTyYCJwoEgVWusAjFH2" : {
+      "coachEmail" : "a@ucsd.edu",
+      "parentPassword" : "test",
+      "playerPassword" : "test",
+      "teamName" : "Team A"
+    },
+    "FUyv1itlMoQgFzykIlJYpEsiX0B3" : {
+      "coachEmail" : "coach@ucsd.edu",
+      "parentPassword" : "test",
+      "playerPassword" : "test",
+      "teamName" : "p"
+    },
+    "ITvbn7UPf0fevYaWmavauTra0fq1" : {
+      "coachEmail" : "coach@ucsd.edu",
+      "parentPassword" : "test",
+      "playerPassword" : "test",
+      "teamName" : "Taem Coach"
+    },
+    "LQ22sMtfoicsesE7PhTDUyZSRxt2" : {
+      "coachEmail" : "y@ucsd.edu",
+      "parentPassword" : "glasses",
+      "playerPassword" : "glasses",
+      "teamName" : "Team Y"
+    },
+    "ZAcXsjj86bQKuJzKNJyJDLri7Se2" : {
+      "coachEmail" : "e@ucsd.edu",
+      "parentPassword" : "test",
+      "playerPassword" : "test",
+      "teamName" : "Team E"
+    },
+    "gNt5AVscVZR72QyyveQJVx9TSf62" : {
+      "coachEmail" : "u@ucsd.edu",
+      "parentPassword" : "t",
+      "playerPassword" : "t",
+      "teamName" : "Team U"
+    },
+    "mJdgcH1fHkeW0z4iyXsiHfxB3sp2" : {
+      "coachEmail" : "c@ucsd.edu",
+      "parentPassword" : "test",
+      "playerPassword" : "test",
+      "teamName" : "Team A"
+    },
+    "mTg7vwlOidW5ifmQE4spTIctHvl2" : {
+      "coachEmail" : "i@ucsd.edu",
+      "parentPassword" : "t",
+      "playerPassword" : "t",
+      "teamName" : "Team I"
+    },
+    "nL3UpCG37PSZFLkt7cLG1tNJ95w1" : {
+      "coachEmail" : "o@ucsd.edu",
+      "parentPassword" : "t",
+      "playerPassword" : "t",
+      "teamName" : "Team O"
+    },
+    "ngNBAoo0Y7NQ1wAIzg5YKmVb7c93" : {
+      "coachEmail" : "elarella@ucsd.edu",
+      "parentPassword" : "Rush11",
+      "playerPassword" : "Rush11",
+      "teamName" : "So Cal Rush"
+    },
+    "zHSwo5vNmQYY4icdiLhGkwAFNhx1" : {
+      "coachEmail" : "coach@ucsd.edu",
+      "parentPassword" : "test",
+      "playerPassword" : "test",
+      "teamName" : "t"
+    },
+    "zy8Go0l8NJeBVm8i535Ced88cNp2" : {
+      "coachEmail" : "g@ucsd.edu",
+      "parentPassword" : "test",
+      "playerPassword" : "test",
+      "teamName" : "Team G"
+    }
+  },
+  "teams" : {
+    "2fVdd865DcNJt737ej9qC2UGEPs2" : {
+      "gameSchedule" : {
+        "-L-_CHhhqelhxKSAzlUp" : {
+          "date" : 1513109520,
+          "homeOrAway" : "Home",
+          "homeTeam" : "Team Test",
+          "loc" : "location",
+          "oppTeam" : "test"
+        }
+      }
+    },
+    "ngNBAoo0Y7NQ1wAIzg5YKmVb7c93" : {
+      "gameSchedule" : {
+        "-L-VFIQQetQQ1iYmSrDb" : {
+          "date" : 1513109520,
+          "homeOrAway" : "Home",
+          "loc" : "ausid",
+          "oppTeam" : "oppon"
+        },
+        "-L-VQIBeKyxtY9-TTrqF" : {
+          "date" : 1513195320,
+          "homeOrAway" : "Home",
+          "loc" : "dsf",
+          "oppTeam" : "test opponent"
+        },
+        "-L-VhPqgR7q_0xqmHhYn" : {
+          "date" : 1512417600,
+          "homeOrAway" : "Home",
+          "loc" : "san diegoo",
+          "oppTeam" : "team today"
+        },
+        "-L-Vi0RweamLVIMDv5t7" : {
+          "date" : 1514664000,
+          "homeOrAway" : "Home",
+          "homeTeam" : "HOME TEAM BITCHES",
+          "loc" : "test location",
+          "oppTeam" : "test"
+        },
+        "-L-VwaAiQQGGW1NRx3RV" : {
+          "date" : 1512165780,
+          "homeOrAway" : "Home",
+          "homeTeam" : "p",
+          "loc" : "oishkd",
+          "oppTeam" : "testopp"
+        },
+        "-L-Vwj4lDfbKN0qMYE81" : {
+          "date" : 1501646400,
+          "homeOrAway" : "Home",
+          "homeTeam" : "p",
+          "loc" : "slkdj",
+          "oppTeam" : "testopp"
+        },
+        "-L-W56tZNjiS_VgYlBqP" : {
+          "date" : 1499886000,
+          "homeOrAway" : "Away",
+          "homeTeam" : "p",
+          "loc" : "sljf",
+          "oppTeam" : "another prev game opp"
+        }
+      },
+      "playerlist" : {
+        "-L-Zn6IGMPSWm0FXuVtl" : {
+          "DOB" : "08/21/2006",
+          "assists" : "0",
+          "captain" : "No",
+          "cks" : "0",
+          "email" : "devin@ucsd.edu",
+          "fname" : "Devin",
+          "fouls" : "0",
+          "games" : "0",
+          "gks" : "0",
+          "goals" : "0",
+          "lname" : "Devin",
+          "name" : "Devin Arellano",
+          "number" : "19",
+          "pks" : "0",
+          "position" : "forward",
+          "profile_pic" : "../images/profile_pic25.jpg",
+          "reds" : "0",
+          "shots" : "0",
+          "throws" : "0",
+          "yellows" : "0"
+        },
+        "-L-ZnWixV2JrzWsjxrwV" : {
+          "DOB" : "08/21/20062",
+          "assists" : "0",
+          "captain" : "No",
+          "cks" : "0",
+          "email" : "devin@ucsd.edu2",
+          "fname" : "Devin22",
+          "fouls" : "0",
+          "games" : "0",
+          "gks" : "0",
+          "goals" : "0",
+          "lname" : "Devin22",
+          "name" : "Devin22 Arellano2",
+          "number" : "192",
+          "pks" : "0",
+          "position" : "forward",
+          "profile_pic" : "../images/profile_pic25.jpg",
+          "reds" : "0",
+          "shots" : "0",
+          "throws" : "0",
+          "yellows" : "0"
+        },
+        "-L-_5S5lqOAEZlh2Z2C6" : {
+          "DOB" : "09/21/2111",
+          "assists" : "0",
+          "captain" : "No",
+          "cks" : "0",
+          "email" : "suhasArehal@ucsd.edu",
+          "fname" : "Suhas ",
+          "fouls" : "0",
+          "games" : "0",
+          "gks" : "0",
+          "goals" : "0",
+          "lname" : "Suhas ",
+          "name" : "Suhas  Arehalli",
+          "number" : "18",
+          "pks" : "0",
+          "position" : "for",
+          "profile_pic" : "../images/profile_pic25.jpg",
+          "reds" : "0",
+          "shots" : "0",
+          "throws" : "0",
+          "yellows" : "0"
+        },
+        "-L-_5u9Fm81UBB5A3YKS" : {
+          "DOB" : "03/31/1996",
+          "assists" : "0",
+          "captain" : "No",
+          "cks" : "0",
+          "email" : "ea@ucsd.edu",
+          "fname" : "E",
+          "fouls" : "0",
+          "games" : "0",
+          "gks" : "0",
+          "goals" : "0",
+          "lname" : "E",
+          "name" : "E A",
+          "number" : "12",
+          "pks" : "0",
+          "position" : "for",
+          "profile_pic" : "../images/profile_pic25.jpg",
+          "reds" : "0",
+          "shots" : "0",
+          "throws" : "0",
+          "yellows" : "0"
+        },
+        "playerkey1" : {
+          "DOB" : "03/31/1996",
+          "assists" : "8",
+          "captain" : "No",
+          "cks" : "6",
+          "email" : "elarella@ucsd.edu",
+          "fname" : "Elden",
+          "fouls" : "5",
+          "games" : "4",
+          "gks" : "2",
+          "goals" : "10",
+          "id" : 1,
+          "link" : "view_player.html",
+          "lname" : "Arellano",
+          "name" : "Elden Arellano",
+          "number" : "1",
+          "pks" : "4",
+          "position" : "midfield",
+          "profile_pic" : "../images/profile_pic25.jpg",
+          "reds" : "1",
+          "shots" : "15",
+          "throws" : "6",
+          "yellows" : "3"
+        },
+        "playerkey2" : {
+          "DOB" : "03/31/1996",
+          "assists" : "8",
+          "captain" : "No",
+          "cks" : "6",
+          "email" : "cgran@gmail.com",
+          "fname" : "Carlos",
+          "fouls" : "5",
+          "games" : "4",
+          "gks" : "2",
+          "goals" : "10",
+          "id" : 2,
+          "link" : "view_player.html",
+          "lname" : "Granados",
+          "name" : "Carlos Granados",
+          "number" : "2",
+          "pks" : "4",
+          "position" : "midfield",
+          "profile_pic" : "../images/profile_pic25.jpg",
+          "reds" : "1",
+          "shots" : "15",
+          "throws" : "6",
+          "yellows" : "3"
+        },
+        "playerkey3" : {
+          "DOB" : "03/31/1996",
+          "assists" : "8",
+          "captain" : "No",
+          "cks" : "6",
+          "email" : "vpala@gmail.com",
+          "fname" : "Victor",
+          "fouls" : "5",
+          "games" : "4",
+          "gks" : "2",
+          "goals" : "10",
+          "id" : 3,
+          "link" : "view_player.html",
+          "lname" : "Palafox",
+          "name" : "Victor Palafox",
+          "number" : "3",
+          "pks" : "4",
+          "position" : "midfield",
+          "profile_pic" : "../images/profile_pic25.jpg",
+          "reds" : "1",
+          "shots" : "15",
+          "throws" : "6",
+          "yellows" : "3"
+        },
+        "playerkey4" : {
+          "DOB" : "03/31/1996",
+          "assists" : "8",
+          "captain" : "No",
+          "cks" : "6",
+          "email" : "nhernandez@gmail.com",
+          "fname" : "Nelson",
+          "fouls" : "5",
+          "games" : "4",
+          "gks" : "2",
+          "goals" : "10",
+          "id" : 4,
+          "link" : "view_player.html",
+          "lname" : "Hernandez",
+          "name" : "Nelson Hernandez",
+          "number" : "4",
+          "pks" : "4",
+          "position" : "midfield",
+          "profile_pic" : "../images/profile_pic25.jpg",
+          "reds" : "1",
+          "shots" : "15",
+          "throws" : "6",
+          "yellows" : "3"
+        }
+      },
+      "stats" : [ {
+        "goalsAgainst" : "3",
+        "goalsFor" : "5",
+        "losses" : "1",
+        "name:" : "Team So Cal Rush",
+        "ties" : "2",
+        "wins" : "6"
+      } ]
+    },
+    "undefined" : {
+      "playerlist" : {
+        "playerkey1" : {
+          "DOB" : "03/31/1996",
+          "captain" : "No",
+          "email" : "elarella@ucsd.edu",
+          "fname" : "Eldennn",
+          "lname" : "Arellano",
+          "name" : "Eldennn Arellano",
+          "number" : "1",
+          "position" : "midfield",
+          "profile_pic" : "../images/profile_pic25.jpg"
+        }
+      }
+    },
+    "zy8Go0l8NJeBVm8i535Ced88cNp2" : {
+      "gameSchedule" : {
+        "-L-Zn_XrpgHxng2OrrP7" : {
+          "date" : 1513109520,
+          "homeOrAway" : "Home",
+          "homeTeam" : "Team G",
+          "loc" : "real location",
+          "oppTeam" : "opp team"
+        },
+        "-L-ZsMxkw4YnblUVD7CL" : {
+          "date" : 1512158400,
+          "homeOrAway" : "Away",
+          "homeTeam" : "Team G",
+          "loc" : "location prev game",
+          "oppTeam" : "team prev game"
+        },
+        "-L-Zxy3TzGDhbeGrtwRX" : {
+          "date" : 1512417600,
+          "homeOrAway" : "Home",
+          "homeTeam" : "Team G",
+          "loc" : "test loc",
+          "oppTeam" : "test op"
+        }
+      },
+      "playerlist" : {
+        "-L-_6Uum-aX1GORJKXfL" : {
+          "DOB" : "09/21/1996",
+          "assists" : "0",
+          "captain" : "No",
+          "cks" : "0",
+          "email" : "tin012@ucsd.edu",
+          "fname" : "tina",
+          "fouls" : "0",
+          "games" : "0",
+          "gks" : "0",
+          "goals" : "0",
+          "lname" : "tina",
+          "name" : "tina nguyen",
+          "number" : "7",
+          "pks" : "0",
+          "position" : "forward",
+          "profile_pic" : "../images/profile_pic25.jpg",
+          "reds" : "0",
+          "shots" : "0",
+          "throws" : "0",
+          "yellows" : "0"
+        }
+      }
+    }
+  },
+  "users" : {
+    "0" : {
+      "DOB" : "03/31/1996",
+      "email" : "elarella@ucsd.edu",
+      "fname" : "Elden",
+      "id" : 1,
+      "lname" : "Arellano",
+      "name" : "Elden Arellano",
+      "parentPassword" : "pass",
+      "password" : "pass",
+      "playerPassword" : "pass",
+      "profile_pic" : "../images/profile_pic25.jpg",
+      "usertype" : "Coach"
+    },
+    "1" : {
+      "DOB" : "03/31/1996",
+      "email" : "devinarella@ucsd.edu",
+      "fname" : "Devin",
+      "id" : 2,
+      "lname" : "Arellano",
+      "name" : "Devin Arellano",
+      "parentPassword" : "pass",
+      "password" : "pass",
+      "playerPassword" : "pass",
+      "profile_pic" : "../images/profile_pic25.jpg",
+      "usertype" : "player"
+    },
+    "2" : {
+      "DOB" : "03/31/1996",
+      "email" : "test@test",
+      "fname" : "Test",
+      "id" : 3,
+      "lname" : "Account",
+      "name" : "Test Account",
+      "parentPassword" : "pass",
+      "password" : "test",
+      "playerPassword" : "pass",
+      "profile_pic" : "../images/profile_pic25.jpg",
+      "usertype" : "Coach"
+    },
+    "6WkvtYphEGOh5gfsCjoJXlfdug53" : {
+      "fname" : "Tina",
+      "groupKey" : "6WkvtYphEGOh5gfsCjoJXlfdug53",
+      "lname" : "Nguyen",
+      "teamName" : "Team P",
+      "usertype" : "coach"
+    },
+    "7lLAG99OXcU4FiQ6BqgZyUroOLa2" : {
+      "fname" : "a",
+      "groupKey" : "7lLAG99OXcU4FiQ6BqgZyUroOLa2",
+      "lname" : "a",
+      "teamName" : "Team A",
+      "usertype" : "coach"
+    },
+    "87TpuaFoxaOtNZkbvGa3j8z7kD52" : {
+      "DOB" : "",
+      "fname" : "h",
+      "groupKey" : "zy8Go0l8NJeBVm8i535Ced88cNp2",
+      "lname" : "h",
+      "teamName" : "Team G",
+      "usertype" : "parent"
+    },
+    "FTR9OW2DtbTyYCJwoEgVWusAjFH2" : {
+      "fname" : "a",
+      "groupKey" : "FTR9OW2DtbTyYCJwoEgVWusAjFH2",
+      "lname" : "a",
+      "teamName" : "Team A",
+      "usertype" : "coach"
+    },
+    "FUyv1itlMoQgFzykIlJYpEsiX0B3" : {
+      "DOB" : "",
+      "fname" : "Coach First",
+      "groupKey" : "FUyv1itlMoQgFzykIlJYpEsiX0B3",
+      "lname" : "Coach Last",
+      "teamName" : "p",
+      "usertype" : "coach"
+    },
+    "N9tMOU4zc0PA6bLEmnQiuMI0NH93" : {
+      "fname" : "d",
+      "groupKey" : "FTR9OW2DtbTyYCJwoEgVWusAjFH2",
+      "lname" : "d",
+      "teamName" : "Team A",
+      "usertype" : "parent"
+    },
+    "QjVhVh19kBX1db28N3PIATWlcYy1" : {
+      "DOB" : "09/21/1996",
+      "fname" : "P",
+      "groupKey" : "-L-UByEMyMM5_lBfC4HN",
+      "lname" : "P",
+      "teamName" : "Team Tina",
+      "usertype" : "player"
+    },
+    "ZAcXsjj86bQKuJzKNJyJDLri7Se2" : {
+      "fname" : "d",
+      "groupKey" : "FTR9OW2DtbTyYCJwoEgVWusAjFH2",
+      "lname" : "d",
+      "teamName" : "Team A",
+      "usertype" : "parent"
+    },
+    "eDsyR01M2LYiKNdGmQxM0zXgEC92" : {
+      "fname" : "h",
+      "groupKey" : "-L-UByEMyMM5_lBfC4HN",
+      "lname" : "h",
+      "teamName" : "Team Tina",
+      "usertype" : "parent"
+    },
+    "gNt5AVscVZR72QyyveQJVx9TSf62" : {
+      "fname" : "u",
+      "groupKey" : "gNt5AVscVZR72QyyveQJVx9TSf62",
+      "lname" : "u",
+      "teamName" : "Team U",
+      "usertype" : "coach"
+    },
+    "mJdgcH1fHkeW0z4iyXsiHfxB3sp2" : {
+      "fname" : "a",
+      "groupKey" : "mJdgcH1fHkeW0z4iyXsiHfxB3sp2",
+      "lname" : "a",
+      "teamName" : "Team A",
+      "usertype" : "coach"
+    },
+    "ngNBAoo0Y7NQ1wAIzg5YKmVb7c93" : {
+      "fname" : "Elden",
+      "groupKey" : "ngNBAoo0Y7NQ1wAIzg5YKmVb7c93",
+      "lname" : "Arellano",
+      "teamName" : "So Cal Rush",
+      "usertype" : "coach"
+    },
+    "p2zwNSlBzmMUafdtoTQiIT0zW0y1" : {
+      "DOB" : "09/21/1996",
+      "fname" : "Tina",
+      "groupKey" : "-L-UByEMyMM5_lBfC4HN",
+      "lname" : "Nguyen",
+      "teamName" : "Team Tina",
+      "usertype" : "parent"
+    },
+    "zy8Go0l8NJeBVm8i535Ced88cNp2" : {
+      "fname" : "g",
+      "groupKey" : "zy8Go0l8NJeBVm8i535Ced88cNp2",
+      "lname" : "g",
+      "teamName" : "Team G",
+      "usertype" : "coach"
+    }
+  }
+}

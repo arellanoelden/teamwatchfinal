@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Sections, Style and Meta Data">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Watch</title>
+  <meta name="theme-color" content="#8bc34a" />
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body>
+  <script src="../firebase.js"></script>
+  <script src="../firebase-firestore.js"></script>
+  <div class="header">
+    <h1>Team Watch</h1>
+  </div>
+  <table id="header-table">
+    <tr>
+      <td class="header-td">
+        <a class="header-link" href="../index.html"> Home </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../game/game_schedule.html"> Game </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../player/player_list.html"> Player </a>
+      </td>
+      <td class="header-td active">
+        <a class="header-link" href="view_profile.html"> Manage </a>
+      </td>
+    </tr>
+  </table>
+  <script>
+    var loadfile = function (event) {
+      var output = document.getElementById('profile_pic');
+      output.src = URL.createObjectURL(event.target.files[0]);
+    };
+  </script>
+  <table class="playerinfo">
+    <tr>
+      <td>
+        <img id="profile_pic" src="../images/profilepic.jpg" alt="profile pic">
+      </td>
+      <td>
+        <input onchange="loadfile(event)" style="border-radius:0.25rem;" type="file" value="Add a photo" class="button" id="addphoto">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>First Name:</label>
+      </td>
+      <td>
+        <input type="text" name="fname" id="fname">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Last Name:</label>
+      </td>
+      <td>
+        <input type="text" name="lname" id="lname">
+      </td>
+    </tr>
+  </table>
+  <div class="center" style="border-radius:0.25rem;">
+    <input style="border-radius:0.25rem; width:21rem;" type="submit" value="Save" class="button" onclick="location.href='../index.html'"
+      ofile id="editProfile">
+  </div>
+  <div class="center" style="border-radius:0.25rem;">
+    <input style="border-radius:0.25rem;" type="submit" value="Delete" class="redbutton" onclick="location.href='../index.html'"
+      id="deleteProfile">
+  </div>
+  <script src="../init.js"></script>
+  <script>
+    var db = firebase.firestore();
+    // Fill up data fields
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        fillInPicture(user);
+        var userData = null;
+        db.collection("users/").doc(user.uid).get().then(function (querySnapshot) {
+          userData = querySnapshot.data();
+          var id = "";
+          var inputs = document.querySelectorAll(".playerinfo tr td:nth-child(2) > :first-child");
+          var names = document.querySelectorAll(".playerinfo tr td img");
+          for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i].hasAttribute("id") && userData[inputs[i].getAttribute("id")]) {
+              id = inputs[i].getAttribute("id");
+              inputs[i].setAttribute("value", userData[id]);
+            }
+          }
+          for (var i = 0; i < names.length; i++) {
+            if (names[i].hasAttribute("id") && userData[names[i].getAttribute("id")]) {
+              var id = names[i].getAttribute("id");
+              if (names[i].tagName == "IMG") {
+                names[i].setAttribute("src", userData[id]);
+              }
+              else {
+                names[i].textContent = userData[id];
+              }
+            }
+          }
+        })
+          .then(function () {
+
+            document.getElementById("deleteProfile").onclick = function () {
+              if (userData.usertype == "coach") {
+                console.log("deleting");
+                // delete  group, delete team
+                db.collection("groups/").doc(user.uid).delete().then(function () {
+                }).then(function () {
+                  console.log("Group successfully deleted!");
+                  db.collection("teams/").doc(user.uid).delete().then(function () {
+                  }).then(function () {
+                    console.log("Team successfully deleted!");
+                  });
+                });
+              }
+              db.collection("users").doc(user.uid).delete().then(function () {
+                console.log(user.uid);
+                console.log("User successfully deleted!");
+              }).then(function() {
+                deleteAccount();
+                // delete users
+              });
+            };
+          });
+      } else {
+        location.href = '../login.html';
+      }
+    });
+
+    function fillInPicture(user) {
+      if (user.photoURL == "exists") {
+        var ref = firebase.storage().ref();
+        ref.child(user.uid).getDownloadURL().then(function (url) {
+          var img = document.getElementById('profile_pic');
+          img.src = url;
+          // console.log(url);
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }
+    }
+
+    document.getElementById("editProfile").onclick = function () {
+      var newProfileInfo = {
+        "fname": "",
+        "lname": "",
+        "name": "",
+        "DOB": "",
+        "profile_pic": ""
+      };
+      newProfileInfo.fname = document.getElementById("fname").value;
+      newProfileInfo.lname = document.getElementById("lname").value;
+      newProfileInfo.name = document.getElementById("fname").value + " " + document.getElementById("lname").value;
+      var user = firebase.auth().currentUser;
+      if (user.photoURL == "exists" || document.getElementById("addphoto").files[0]) {
+        newProfileInfo.profile_pic = "exists";
+      }
+      writeProfileData(user, newProfileInfo);
+    }
+
+    function writeProfileData(user, newProfileInfo) {
+      user.updateProfile({
+        displayName: newProfileInfo.name,
+        photoURL: newProfileInfo.profile_pic
+      }).then(function () {
+        db.collection('users/').doc(user.uid).update({
+          fname: newProfileInfo.fname,
+          lname: newProfileInfo.lname,
+          DOB: newProfileInfo.DOB
+        })
+          .then(function () {
+            uploadPicture();
+          });
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
+
+    function uploadPicture() {
+      var user = firebase.auth().currentUser;
+      var file = document.getElementById("addphoto").files;
+      var ref = firebase.storage().ref();
+      if (file.length == 1) {
+        ref.child(user.uid).put(file[0])
+          .then(function (snapshot) {
+            location.href = 'view_profile.html';
+          });
+      }
+      else {
+        location.href = 'view_profile.html';
+      }
+    }
+
+    function deleteAccount() {
+      var user = firebase.auth().currentUser;
+      user.delete().then(function () {
+        location.href = '../login.html';
+      }).catch(function (error) {
+        // An error happened.
+      });
+    }
+  </script>
+</body>
+  </html>

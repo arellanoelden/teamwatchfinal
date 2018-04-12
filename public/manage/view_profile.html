@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Sections, Style and Meta Data">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Watch</title>
+  <meta name="theme-color" content="#8bc34a"/>
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+  <script src="../firebase.js"></script>
+  <script src="../firebase-firestore.js"></script>
+  <!--<script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCfMC6E9eNfRbX7Zy--2UFkJkn3ffpgji8",
+      authDomain: "cse134bfinal.firebaseapp.com",
+      databaseURL: "https://cse134bfinal.firebaseio.com",
+      projectId: "cse134bfinal",
+      storageBucket: "cse134bfinal.appspot.com",
+      messagingSenderId: "329284980436"
+    };
+    firebase.initializeApp(config);
+    var database = firebase.database();
+    // Redirect if not logged in
+    var user = firebase.auth().currentUser;
+    if (!user) {
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (!user) {
+          location.href = '../login.html';
+        }
+      });
+    }
+  </script>-->
+  <div class="header">
+    <h1>Team Watch</h1>
+  </div>
+  <table id="header-table">
+    <tr>
+      <td class="header-td"><a class="header-link" href="../index.html"> Home </a></td>
+      <td class="header-td"><a class="header-link" href="../game/game_schedule.html"> Game </a></td>
+      <td class="header-td"><a class="header-link" href="../player/player_list.html"> Player </a></td>
+      <td class="header-td active"><a class="header-link" href="#"> Manage </a></td>
+    </tr>
+  </table>
+  <a href="edit_profile.html"><img style="float: right; margin-top: 1vh;margin-right: 2vw;" width=30 height=30 src="../images/edit2.png" alt="edit"></a>
+  <table class="playerinfo">
+    <tr>
+      <td><img id="profile_pic" src="../images/profilepic.jpg" alt="profile pic"></td>
+      <td ><p id="name"></p><p id="usertype"></p></td>
+    </tr>
+    <tr>
+      <td>Email:</td>
+      <td id="email"></td>
+    </tr>
+  </table>
+  <br/>
+  <br/>
+  <br/>
+  <button class="button logout-button" onclick="logout()">Logout</button>
+  <script>
+    function logout() {
+      firebase.auth().signOut().then(function() {
+        location.href='../login.html';
+      }).catch(function(error) {
+        console.log(error);
+      });
+    }
+  </script>
+  <script src="../init.js"></script>
+  <script>
+      var db = firebase.firestore();
+      firebase.firestore().enablePersistence()
+      .catch(function (err) {
+        console.log(err);
+      });
+    var user = firebase.auth().currentUser;
+    if (!user) {
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          // console.log(user);
+          fillInProfile(user);
+        } else {
+          location.href = '../login.html';
+        }
+      });
+    } else {
+      fillInProfile(user);
+    }
+
+    function fillInProfile(user) {
+      db.collection("users/").doc(user.uid).get().then(function(querySnapshot) {
+        var userData = querySnapshot.data();
+        document.getElementById("usertype").textContent = userData.usertype.substring(0,1).toUpperCase() + userData.usertype.substring(1);
+        document.getElementById("name").textContent = user.displayName;
+        document.getElementById("email").textContent = user.email;
+      });
+      fillInPicture(user);
+    }
+
+    function fillInPicture(user) {
+      if (user.photoURL == "exists")  {
+        var ref = firebase.storage().ref();
+        ref.child(user.uid).getDownloadURL().then(function (url) {
+          var img = document.getElementById('profile_pic');
+          img.src = url;
+          // console.log(url);
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Sections, Style and Meta Data">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Watch</title>
+  <meta name="theme-color" content="#8bc34a" />
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/main.css">
+  <style type="text/css">
+    .playerinfo tr td:nth-child(1) {
+      width: 100%;
+      margin-right: 1vw;
+    }
+  </style>
+</head>
+
+<body>
+  <script src="../firebase.js"></script>
+  <script src="../firebase-firestore.js"></script>
+  <!--<script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCfMC6E9eNfRbX7Zy--2UFkJkn3ffpgji8",
+      authDomain: "cse134bfinal.firebaseapp.com",
+      databaseURL: "https://cse134bfinal.firebaseio.com",
+      projectId: "cse134bfinal",
+      storageBucket: "cse134bfinal.appspot.com",
+      messagingSenderId: "329284980436"
+    };
+    firebase.initializeApp(config);
+    var database = firebase.database();
+    var db = firebase.firestore();
+  </script>-->
+  <div class="header">
+    <h1>Team Watch</h1>
+  </div>
+  <table id="header-table">
+    <tr>
+      <td class="header-td">
+        <a class="header-link" href="../index.html"> Home </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../game/game_schedule.html"> Game </a>
+      </td>
+      <td class="header-td active">
+        <a class="header-link" href="../player/player_list.html"> Player </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../manage/view_profile.html"> Manage </a>
+      </td>
+    </tr>
+  </table>
+  <div hidden id="editPlayerWrapper">
+    <a id="editplayer" href="edit_player.html">
+      <img style="margin-top:1vh; float:right; margin-right:1.5vw;" width=25 height=25 src="../images/edit2.png" alt="edit">
+    </a>
+  </div>
+  <table class="playerinfo">
+    <tr>
+      <td>
+        <img id="profile_pic" src="../images/profilepic.jpg" alt="profile pic">
+      </td>
+      <td>
+        <p id="name"></p>
+        <p id="playerID"></p>
+      </td>
+    </tr>
+    <tr>
+      <td>Position:</td>
+      <td id="position"></td>
+    </tr>
+    <tr>
+      <td>Jersey #:</td>
+      <td id="number"></td>
+    </tr>
+    <tr>
+      <td>Date of Birth:</td>
+      <td id="DOB"></td>
+    </tr>
+    <tr>
+      <td>Goals:</td>
+      <td id="goals"></td>
+    </tr>
+    <tr>
+      <td>Assists:</td>
+      <td id="assists"></td>
+    </tr>
+    <tr>
+      <td>Shots on Goal:</td>
+      <td id="shots"></td>
+    </tr>
+    <tr>
+      <td>Red Cards:</td>
+      <td id="reds"></td>
+    </tr>
+    <tr>
+      <td>Yellow Cards:</td>
+      <td id="yellows"></td>
+    </tr>
+    <tr>
+      <td>Fouls:</td>
+      <td id="fouls"></td>
+    </tr>
+    <tr>
+      <td>Penalty Kicks:</td>
+      <td id="pks"></td>
+    </tr>
+    <tr>
+      <td>Corner Kicks:</td>
+      <td id="cks"></td>
+    </tr>
+    <tr>
+      <td>Goal Kicks:</td>
+      <td id="gks"></td>
+    </tr>
+    <tr>
+      <td>Free Throws:</td>
+      <td id="throws"></td>
+    </tr>
+    <tr>
+      <td>Games Played:</td>
+      <td id="games"></td>
+    </tr>
+  </table>
+  <script src="../init.js"></script>
+  <script>
+    db = firebase.firestore();
+    firebase.firestore().enablePersistence()
+      .catch(function (err) {
+        console.log(err);
+      });
+    // If the user is logged in, redirect to home page.
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (!user) {
+        location.href = '../login.html';
+      }
+      db.collection("users").doc(user.uid).get().then(function (querySnapshot) {
+        var usertype = querySnapshot.data().usertype;
+        showEditPlayerButton(usertype);
+        var groupKey = querySnapshot.data().groupKey;
+        db.collection("teams/" + groupKey + "/playerlist/").doc(localStorage.getItem("playerId")).get().then(function (querySnapshot) {
+          var player = querySnapshot.data();
+          var inputs = document.querySelectorAll(".playerinfo tr td:nth-child(2)");
+          var names = document.querySelectorAll(".playerinfo tr td *");
+          for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i].hasAttribute("id") && player[inputs[i].getAttribute("id")]) {
+              var id = inputs[i].getAttribute("id");
+              inputs[i].textContent = player[id];
+            }
+          }
+          for (i = 0; i < names.length; i++) {
+            if (names[i].hasAttribute("id") && player[names[i].getAttribute("id")]) {
+              id = names[i].getAttribute("id");
+              names[i].textContent = player[id];
+            }
+          }
+          fillInPicture(player);
+        });
+      })
+        .catch(function (error) {
+          console.log(error);
+        });;
+    });
+    function fillInPicture(player) {
+      if (player.profile_pic) {
+        var img = document.getElementById('profile_pic');
+        img.src = player.profile_pic;
+      }
+    }
+    function showEditPlayerButton(usertype) {
+      if (usertype == "coach") {
+        document.getElementById("editPlayerWrapper").hidden = false;
+      }
+    }
+  </script>
+</body>
+</html>

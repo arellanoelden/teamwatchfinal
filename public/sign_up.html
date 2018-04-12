@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- File transfer size: 213KB
+       Load time: 8.2 s
+       DOM: 2.29s
+  -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Sections, Style and Meta Data">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Watch</title>
+  <meta name="theme-color" content="#8bc34a"/>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+ <script src="firebase.js"></script>
+ <script src="firebase-firestore.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCfMC6E9eNfRbX7Zy--2UFkJkn3ffpgji8",
+      authDomain: "cse134bfinal.firebaseapp.com",
+      databaseURL: "https://cse134bfinal.firebaseio.com",
+      projectId: "cse134bfinal",
+      storageBucket: "cse134bfinal.appspot.com",
+      messagingSenderId: "329284980436"
+    };
+    firebase.initializeApp(config);
+    var db = firebase.firestore();
+    firebase.firestore().enablePersistence()
+    .then(function() {
+      // Initialize Cloud Firestore through firebase
+      var db = firebase.firestore();
+    })
+      .catch(function(err) {
+      if (err.code == 'failed-precondition') {
+          // Multiple tabs open, persistence can only be enabled
+          // in one tab at a a time.
+          // ...
+      } else if (err.code == 'unimplemented') {
+          // The current browser does not support all of the
+          // features required to enable persistence
+          // ...
+      }
+    });
+  </script>
+  <body>
+  <div class="header">
+    <h1>Team Watch</h1>
+  </div>
+  <table id="header-table">
+    <tr>
+      <td class="header-td active"><a class="header-link" href="index.html"> Home </a></td>
+      <td class="header-td"><a class="header-link" href="game/game_schedule.html"> Game </a></td>
+      <td class="header-td"><a class="header-link" href="player/player_list.html"> Player </a></td>
+      <td class="header-td"><a class="header-link" href="manage/view_profile.html"> Manage </a></td>
+    </tr>
+    </table>
+    <table class="playerinfo">
+      <tr>
+        <td colspan="2"><img style="margin-left:70%;" src="images/soccer_ball.png" alt="soccer ball"></td>
+      </tr>
+      <tr>
+        <td><label>User ID(email):</label></td>
+        <td><input type="text" name="email" id="email"></td>
+      </tr>
+      <tr>
+        <td><label>First Name:</label></td>
+        <td><input type="text" name="fname" id="fname"></td>
+      </tr>
+      <tr>
+        <td><label>Last Name:</label></td>
+        <td><input type="text" name="lname" id="lname"></td>
+      </tr>
+      <tr>
+        <td><label>Team Name: </label></td> 
+        <td><input type="text" name="teamname" id="teamName"></td>
+      </tr>
+      <tr>
+        <td><label>Password:</label></td>
+        <td><input type="text" name="password" id="password"></td>
+      </tr>
+      <tr>
+        <td><label>Confirm Password:</label></td>
+        <td><input type="text" name="cpassword" id="cpassword"></td>
+      </tr>
+    </table>
+    <p class="p-error">Error with a field/fields.</p>
+    <div style="text-align:center;">
+        <input id="coachOption" type="radio" name="userType" value="coach">
+        <label>Coach</label>
+    </div>
+    <div style="text-align:center;">
+      <input id="parentOption" type="radio" name="userType" value="parent">
+      <label>Parent</label>
+    </div>
+    <div style="text-align:center;">
+      <input id="playerOption" type="radio" name="userType" value="player">
+      <label>Player</label>
+    </div>
+    <div class="center" style="border-radius:0.25rem;">
+      <input id="signUp" style="width:12rem; border-radius:0.25rem;" type="submit" value="Sign up" class="button">
+    </div>
+   
+    <script>
+      var lasttr = document.querySelectorAll("table tbody")[1];
+      var userTypeOptions = document.querySelectorAll("[name=\"userType\"]");
+      var addedExtraFields = false;
+      for (i = 0; i < userTypeOptions.length; ++i) {
+        switch(i) {
+          case 0:
+            userTypeOptions[i].onclick = addExtraFields2;
+            break;
+          case 1:
+          case 2:
+            userTypeOptions[i].onclick = addExtraFields1;
+            break;
+          default:
+            break;
+        }
+      }
+      function removeExtraFields() {
+        if (addedExtraFields) {
+          lasttr.removeChild(lasttr.lastChild);
+          lasttr.removeChild(lasttr.lastChild);
+          addedExtraFields = false;
+        }
+      } 
+      function addExtraFields1() {
+          removeExtraFields();
+          var emailtr = document.createElement('tr');
+          emailtr.innerHTML = '<td><label>Coach Email: </label></td><td><input type="text" name="cemail" id="cemail"></td>';
+          var passtr = document.createElement('tr');
+          passtr.innerHTML = '<td><label>Secret Password: </label></td><td><input type="text" name="spass" id="spass"></td>';
+          lasttr.appendChild(emailtr);
+          lasttr.appendChild(passtr);
+          addedExtraFields = true;
+      }
+      function addExtraFields2() {
+          removeExtraFields();
+          var p1 = document.createElement('tr');
+          p1.innerHTML = '<td><label>Parent Password: </label></td><td><input type="text" name="parentPass" id="parentPass"></td>';
+          var p2 = document.createElement('tr');
+          p2.innerHTML = '<td><label>Player Password: </label></td><td><input type="text" name="playerPass" id="playerPass"></td>';
+          lasttr.appendChild(p1);
+          lasttr.appendChild(p2);
+          addedExtraFields = true;
+      }
+    
+      function addUser(userInfo) {
+        var errorEl = document.getElementsByClassName("p-error")[0];
+        var createdAccount = false;
+
+        var promise = firebase.auth().createUserWithEmailAndPassword(userInfo.email, userInfo.password)
+        .then(function(user) {
+          firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+              // Update basic user information
+              user.updateProfile({
+                displayName: userInfo.fname + " " + userInfo.lname,
+                // photoURL: userInfo.profile_pic
+              }).then(function() {
+                // Add extra user information to users table
+                console.log(userInfo.usertype);
+                if (userInfo.usertype == 'coach') {
+                  userInfo.groupKey = user.uid;
+                  db.collection('groups/').doc(user.uid).set({
+                    coachEmail: user.email,
+                    teamName: userInfo.teamName,
+                    playerPassword: userInfo.playerPassword,
+                    parentPassword: userInfo.parentPassword
+                  })
+                  .then(function() {
+                    addToUsers(user, userInfo);
+                  });
+                } else {
+                    addToUsers(user, userInfo);
+                }
+              }, function(error) {
+                console.log(error);
+                errorEl.style.visibility = "visible";
+                errorEl.textContent = "We could not create an account.";
+              });
+            } 
+          });
+        })
+        .catch(function(error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+
+          errorEl.style.visibility = "visible";
+          errorEl.textContent = errorMessage;
+        });
+      }
+      function addToUsers(user, userInfo) {
+        db.collection('users/').doc(user.uid).set({
+          groupKey: userInfo.groupKey,
+          usertype: userInfo.usertype,
+          teamName: userInfo.teamName,
+          fname: userInfo.fname,
+          lname: userInfo.lname
+        })
+        .then(function() {
+          location.href = 'index.html';
+        });
+      }
+         
+
+      var buttEl = document.getElementById("signUp");
+      buttEl.onclick = function() {
+        var userInfo = {
+          "name": "",
+          "fname": "",
+          "lname": "",
+          "email": "",
+          "profile_pic": "",
+          "usertype": "",
+          "password": "",
+          "teamName": "",
+          "parentPassword": "",
+          "playerPassword": ""
+        };
+        userInfo.email = document.getElementById("email").value;
+        userInfo.password = document.getElementById("password").value;
+        userInfo.fname = document.getElementById("fname").value;
+        userInfo.lname = document.getElementById("lname").value;
+        userInfo.name = userInfo.fname + " " + userInfo.lname;
+        var cpassword = document.getElementById("cpassword").value;
+        userInfo.teamName = document.getElementById("teamName").value;
+        userTypeOptions = document.querySelectorAll("[name=\"userType\"]");
+        var found = false;
+        userInfo.profile_pic = "../images/profile_pic25.jpg";
+        for(i = 0; i < userTypeOptions.length; i++) {
+          if(userTypeOptions[i].checked) {
+            userInfo.usertype = userTypeOptions[i].value;
+            found = true;
+          }
+        }
+
+        var errorEl = document.getElementsByClassName("p-error")[0];
+        var valid = true;
+        if (userInfo.fname == "" || userInfo.lname == "" || userInfo.email == "") {
+          errorEl.style.visibility = "visible";
+          errorEl.textContent = "Missing a field."
+          valid = false;
+        }
+        if (userInfo.password != cpassword) {
+          errorEl.style.visibility = "visible";
+          errorEl.textContent = "Passwords are not the same."
+          valid = false;
+        }
+
+        if (!found) {
+          errorEl.style.visibility = "visible";
+          errorEl.textContent = "Select Coach, Parent, or Player."
+          return;
+        }
+
+        // Check if secret password is correct
+        if(userInfo.usertype != "coach") {
+          var cemail = document.querySelector("#cemail").value;
+          var spass = document.querySelector("#spass").value;
+          var found = false;
+
+          db.collection("groups/").get().then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+              user = doc.data();
+              if (user['teamName'] == userInfo.teamName && user['coachEmail'] == cemail && user[userInfo.usertype+'Password'] == spass) {
+                userInfo.groupKey = doc.id;
+                found = true;
+              }
+            });
+            if (!found) {
+              valid = false;
+              errorEl.style.visibility = "visible";
+              errorEl.textContent = "Team Name, Coach Email, and Secret Password do not match our records."
+            }
+
+            if (valid) {
+              var newUserInfo = userInfo;
+              addUser(userInfo);
+            }
+          });
+        } else {
+          userInfo.parentPassword = document.querySelector("#parentPass").value;
+          userInfo.playerPassword = document.querySelector("#playerPass").value;
+          addUser(userInfo);
+        }
+      }
+    </script>
+  </body>
+</html>

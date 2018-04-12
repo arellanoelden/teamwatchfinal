@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- File transfer size: 8.3KB
+       Load time: 4.30s
+       DOM: 2.30s
+  -->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Sections, Style and Meta Data">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Watch</title>
+  <meta name="theme-color" content="#8bc34a" />
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body>
+  <script src="../firebase.js"></script>
+  <script src="../firebase-firestore.js"></script>
+  <div class="header">
+    <h1>Team Watch</h1>
+  </div>
+  <table id="header-table">
+    <tr>
+      <td class="header-td">
+        <a class="header-link" href="../index.html"> Home </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../game/game_schedule.html"> Game </a>
+      </td>
+      <td class="header-td active">
+        <a class="header-link" href="../player/player_list.html"> Player </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../manage/view_profile.html"> Manage </a>
+      </td>
+    </tr>
+  </table>
+  <script>
+    var loadfile = function (event) {
+      var output = document.getElementById('player_pic');
+      output.src = URL.createObjectURL(event.target.files[0]);
+    };
+  </script>
+  <table class="playerinfo">
+    <tr>
+      <td>
+        <img id="player_pic" src="../images/profilepic.jpg" alt="profile pic">
+      </td>
+      <td>
+        <input onchange="loadfile(event)" style="border-radius:0.25rem;" type="file" name="Add a photo" class="button" id="addphoto">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>First Name:</label>
+      </td>
+      <td>
+        <input type="text" name="fname" id="fname">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Last Name:</label>
+      </td>
+      <td>
+        <input type="text" name="lname" id="lname">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Email Name:</label>
+      </td>
+      <td>
+        <input type="text" name="email" id="email">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Date of Birth:</label>
+      </td>
+      <td>
+        <input type="text" name="DOB" id="DOB">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Jersey Number:</label>
+      </td>
+      <td>
+        <input type="text" name="number" id="number">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Position:</label>
+      </td>
+      <td>
+        <input type="text" name="position" id="position">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Captain:</label>
+      </td>
+      <td>
+        <select id="captain" name="captain">
+          <option id="coption" selected>No</option>
+          <option id="coption">Yes</option>
+        </select>
+      </td>
+    </tr>
+  </table>
+  <div class="center" style="border-radius:0.25rem;">
+    <input style="width:21rem; border-radius:0.25rem;" type="submit" value="Add player" class="button" id="addPlayer">
+  </div>
+  <script src="../init.js"></script>
+  <script>
+      var db = firebase.firestore();
+    firebase.firestore().enablePersistence()
+    .catch(function(err) {
+      console.log(err);
+    });
+    // If the user is logged in, redirect to home page.
+    function addPlayer(playerInfo, uid) {
+      var file = document.getElementById("addphoto").files;
+      var ref = firebase.storage().ref();
+      var firestoreRef = db.collection("teams/" + uid + '/playerlist').doc();
+      if (file.length == 1) {
+        ref.child(firestoreRef.id).put(file[0])
+          .then(function (snapshot) {
+            // console.log(snapshot);
+            ref.child(firestoreRef.id).getDownloadURL().then(function (url) {
+              playerInfo.profile_pic = url;
+              addPlayerInfo(firestoreRef, playerInfo,uid);
+            });
+          });
+      } else {
+        addPlayerInfo(firestoreRef, playerInfo,uid);
+      }
+    }
+    function addPlayerInfo(firestoreRef, playerInfo, uid) {
+      firestoreRef.set({
+        name: playerInfo.name,
+        fname: playerInfo.fname,
+        lname: playerInfo.lname,
+        email: playerInfo.email,
+        DOB: playerInfo.DOB,
+        number: playerInfo.number,
+        position: playerInfo.position,
+        profile_pic: playerInfo.profile_pic,
+        captain: playerInfo.captain,
+        goals: "0",
+        assists: "0",
+        shots: "0",
+        reds: "0",
+        yellows: "0",
+        fouls: "0",
+        pks: "0",
+        cks: "0",
+        gks: "0",
+        throws: "0",
+        games: "0",
+      }).then(function () {
+        location.href = 'player_list.html';
+      });
+    }
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (!user) {
+        location.href = '../login.html';
+      }
+      document.getElementById("addPlayer").onclick = function () {
+        var playerInfo = {
+          "name": "",
+          "fname": "",
+          "lname": "",
+          "email": "",
+          "DOB": "",
+          "number": "",
+          "position": "",
+          "name": "",
+          "profile_pic": "",
+          "captain": "",
+          "id": ""
+        };
+        playerInfo.fname = document.getElementById("fname").value;
+        playerInfo.lname = document.getElementById("lname").value;
+        playerInfo.email = document.getElementById("email").value;
+        playerInfo.DOB = document.getElementById("DOB").value;
+        playerInfo.number = document.getElementById("number").value;
+        playerInfo.position = document.getElementById("position").value;
+        playerInfo.name = document.getElementById("fname").value + " " + document.getElementById("lname").value;
+        var captainOptions = document.querySelectorAll("#coption");
+        for (var i = 0; i < captainOptions.length; i++) {
+          if (captainOptions[i].selected) {
+            playerInfo.captain = captainOptions[i].value;
+          }
+        }
+        addPlayer(playerInfo, user.uid);
+      }
+    });
+  </script>
+</body>
+
+</html>

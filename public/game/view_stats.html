@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Sections, Style and Meta Data">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Watch</title>
+  <meta name="theme-color" content="#8bc34a"/>
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body>
+  <script src="../firebase.js"></script>
+  <script src="../firebase-firestore.js"></script>
+  <div class="header">
+    <h1>Team Watch</h1>
+  </div>
+  <table id="header-table">
+    <tr>
+      <td class="header-td">
+        <a class="header-link" href="../index.html"> Home </a>
+      </td>
+      <td class="header-td active">
+        <a class="header-link" href="game_schedule.html"> Game </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../player/player_list.html"> Player </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../manage/view_profile.html"> Manage </a>
+      </td>
+    </tr>
+  </table>
+
+  <br />
+  <div class="center">
+    <h1 style="color: black;" id="winOrLoss"></h1>
+    <br />
+    <p id="datePlayed"></p>
+    <p id="location"></p>
+  </div>
+  <table class="contenders">
+    <tr>
+      <td>
+        <p id="homeTeam"></p>
+      </td>
+      <td>
+        <p id="oppTeam"></p>
+      </td>
+    </tr>
+  </table>
+  <br/>
+  <div id="noStatsAvail" hidden>
+    <h2 class="center">No statistics available for this game.</h2>
+  </div>
+  <div id="statsAvail" hidden>
+    <table class="game-stats">
+      <tr>
+        <td>
+          <p id="homeGoals"></p>
+        </td>
+        <td>
+          <p class="statLabel">Goals</p>
+        </td>
+        <td>
+          <p id="oppGoals"></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id="homeShots"></p>
+        </td>
+        <td>
+          <p class="statLabel">Shot on Goals</p>
+        </td>
+        <td>
+          <p id="oppShots"></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id="homePoss"></p>
+        </td>
+        <td>
+          <p class="statLabel">Possessions</p>
+        </td>
+        <td>
+          <p id="oppPoss"></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id="homeYel"></p>
+        </td>
+        <td>
+          <p class="statLabel">Cards</p>
+        </td>
+        <td>
+          <p id="oppYel"></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id="homeRed"></p>
+        </td>
+        <td>
+          <p class="statLabel">Cards</p>
+        </td>
+        <td>
+          <p id="oppRed"></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id="homeFouls"></p>
+        </td>
+        <td>
+          <p class="statLabel">Fouls</p>
+        </td>
+        <td>
+          <p id="oppFouls"></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id="homePks"></p>
+        </td>
+        <td>
+          <p class="statLabel">Penalty Kicks</p>
+        </td>
+        <td>
+          <p id="oppPks"></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id="homeCks"></p>
+        </td>
+        <td>
+          <p class="statLabel">Corner Kicks</p>
+        </td>
+        <td>
+          <p id="oppCks"></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id="homeGks"></p>
+        </td>
+        <td>
+          <p class="statLabel">Goals Kicks</p>
+        </td>
+        <td>
+          <p id="oppGks"></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id="homeThrows"></p>
+        </td>
+        <td>
+          <p class="statLabel">Free Throws</p>
+        </td>
+        <td>
+          <p id="oppThrows"></p>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <script src="../init.js"></script>
+  <script>
+    db = firebase.firestore();
+    firebase.firestore().enablePersistence()
+    .catch(function(err) {
+      console.log(err);
+    });
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        var gameId = localStorage.getItem('gameId');
+        var groupKey = localStorage.getItem('coachuid');
+        var preURL = 'teams/' + groupKey + '/gameSchedule/';
+        firebase.firestore().collection(preURL).doc(gameId).get().then(function (querySnapshot) {
+          var stats = querySnapshot.data();
+          // console.log(stats);
+          var index = 0
+          var home = document.querySelectorAll("[id^=home]");
+          var away = document.querySelectorAll("[id^=opp]");
+          for (var i = 0; i < home.length; i++) {
+            var id = home[i].getAttribute("id");
+            if (id == "homeTeam") {
+              home[i].textContent = "Home: " + stats[id];
+            }
+            else {
+              home[i].textContent = stats[id];
+            }
+          }
+          for (i = 0; i < away.length; i++) {
+            id = away[i].getAttribute("id");
+            if (id == "oppTeam") {
+              away[i].textContent = "Away: " + stats[id];
+            }
+            else {
+              away[i].textContent = stats[id];
+            }
+          }
+          var date = document.querySelector("#datePlayed");
+          date.textContent = "Date Played: " + getDateStr(stats["date"]);
+          var loc = document.querySelector("#location");
+          loc.textContent = "Location: " + stats["loc"];
+
+          if (stats.homeGoals != null) {
+            document.getElementById('noStatsAvail').hidden = false;
+            document.getElementById('winOrLoss').textContent = "N / A";
+          } else {
+            document.getElementById('statsAvail').hidden = false;
+            if (stats.homeGoals < stats.oppGoals) {
+              document.getElementById('winOrLoss').textContent = "Loss";
+            } else if (stats.homeGoals > stats.oppGoals) {
+              document.getElementById('winOrLoss').textContent = "Win";
+            } else {
+              document.getElementById('winOrLoss').textContent = "Tie";
+            }
+          }
+        });
+      } else {
+        location.href = '../login.html';
+      }
+    });
+
+    function getDateStr(ts) {
+      var date = new Date(ts * 1000);
+      var monthNames = new Array("January", "February", "March",
+        "April", "May", "June", "July", "August", "September",
+        "October", "November", "December");
+      var cDate = date.getDate();
+      var cMonth = date.getMonth();
+      var cYear = date.getFullYear();
+      var cHour = date.getHours();
+      var cMin = date.getMinutes();
+      var cSec = date.getSeconds();
+      var ampm = cHour >= 12 ? 'pm' : 'am';
+      cHour = cHour % 12;
+      cHour = cHour ? cHour : 12; // the hour '0' should be '12'
+      cMin = cMin < 10 ? '0' + cMin : cMin;
+      return (monthNames[cMonth] + " " + cDate + ", " + cYear + " " + cHour + ":" + cMin + ' ' + ampm);
+    }
+  </script>
+</body>
+
+</html>

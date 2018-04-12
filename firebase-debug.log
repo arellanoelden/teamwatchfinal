@@ -1,0 +1,36 @@
+[debug] [2017-12-08T00:22:12.066Z] ----------------------------------------------------------------------
+[debug] [2017-12-08T00:22:12.068Z] Command:       /usr/bin/node /usr/local/bin/firebase serve
+[debug] [2017-12-08T00:22:12.068Z] CLI Version:   3.15.4
+[debug] [2017-12-08T00:22:12.068Z] Platform:      linux
+[debug] [2017-12-08T00:22:12.068Z] Node Version:  v8.9.1
+[debug] [2017-12-08T00:22:12.068Z] Time:          Thu Dec 07 2017 16:22:12 GMT-0800 (PST)
+[debug] [2017-12-08T00:22:12.068Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-12-08T00:22:12.077Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-12-08T00:22:12.077Z] > authorizing via signed-in user
+[debug] [2017-12-08T00:22:12.079Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/cse134bfinal  
+ Thu Dec 07 2017 16:22:12 GMT-0800 (PST)
+[debug] [2017-12-08T00:22:12.105Z] Error: getaddrinfo EAI_AGAIN admin.firebase.com:443
+    at Object._errnoException (util.js:1024:11)
+    at errnoException (dns.js:55:15)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:92:26)
+[error] 
+[error] Error: Server Error. getaddrinfo EAI_AGAIN admin.firebase.com:443
+[debug] [2017-12-08T00:22:16.604Z] ----------------------------------------------------------------------
+[debug] [2017-12-08T00:22:16.606Z] Command:       /usr/bin/node /usr/local/bin/firebase serve
+[debug] [2017-12-08T00:22:16.606Z] CLI Version:   3.15.4
+[debug] [2017-12-08T00:22:16.606Z] Platform:      linux
+[debug] [2017-12-08T00:22:16.606Z] Node Version:  v8.9.1
+[debug] [2017-12-08T00:22:16.606Z] Time:          Thu Dec 07 2017 16:22:16 GMT-0800 (PST)
+[debug] [2017-12-08T00:22:16.606Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-12-08T00:22:16.614Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-12-08T00:22:16.614Z] > authorizing via signed-in user
+[debug] [2017-12-08T00:22:16.616Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/cse134bfinal  
+ Thu Dec 07 2017 16:22:16 GMT-0800 (PST)
+[debug] [2017-12-08T00:22:16.643Z] Error: getaddrinfo EAI_AGAIN admin.firebase.com:443
+    at Object._errnoException (util.js:1024:11)
+    at errnoException (dns.js:55:15)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:92:26)
+[error] 
+[error] Error: Server Error. getaddrinfo EAI_AGAIN admin.firebase.com:443

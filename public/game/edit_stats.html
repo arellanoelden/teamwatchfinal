@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Sections, Style and Meta Data">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Watch</title>
+  <meta name="theme-color" content="#8bc34a"/>
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .dropbtn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 16px;
+      font-size: 16px;
+      border: none;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+    }
+
+    .dropdown-content li:nth-child(odd) {
+      float: right;
+    }
+
+    .dropdown-content li {
+      width: 12vw;
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content li:hover {
+      background-color: #f1f1f1
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+      width: 30vw;
+    }
+
+    .dropdown:hover .dropbtn {
+      background-color: #3e8e41;
+    }
+
+    .game-stats-live-header {
+      width: 50%;
+      margin: auto;
+      border-spacing: 3vh;
+    }
+
+    .game-stats-live-header tr td:first-child {
+      float: right;
+    }
+
+    .game-stats-live-header td:nth-child(-n+2) {
+      width: 25%;
+    }
+
+    .game-stats-live-header td:nth-child(n+3) {
+      width: 50%;
+    }
+
+    .score {
+      font-size: 2rem;
+    }
+
+    .game-stats-live {
+      width: 70%;
+      margin: auto;
+      border-spacing: 1vh;
+    }
+
+    .game-stats-live tr {
+      text-align: center;
+    }
+
+    .stat-type {
+      font-size: 1.3rem;
+    }
+
+
+    button[class~="minus-button"]+div {
+      right: 0;
+    }
+
+    .edit-stats-button {
+      padding: .5rem .7rem .5rem .7rem;
+      font-size: 1rem;
+      background-color: rgb(134, 142, 149);
+      color: white;
+    }
+
+    .minus-button {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <script src="../firebase.js"></script>
+  <script src="../firebase-firestore.js"></script>
+  <!--<script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCfMC6E9eNfRbX7Zy--2UFkJkn3ffpgji8",
+      authDomain: "cse134bfinal.firebaseapp.com",
+      databaseURL: "https://cse134bfinal.firebaseio.com",
+      projectId: "cse134bfinal",
+      storageBucket: "cse134bfinal.appspot.com",
+      messagingSenderId: "329284980436"
+    };
+    firebase.initializeApp(config);
+    // If the user is logged in, redirect to home page.
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (!user) {
+        location.href = '../login.html';
+      }
+    });
+  </script>-->
+  <div class="header">
+    <h1>Team Watch</h1>
+  </div>
+  <table id="header-table">
+    <tr>
+      <td class="header-td">
+        <a class="header-link" href="../index.html"> Home </a>
+      </td>
+      <td class="header-td active">
+        <a class="header-link" href="game_schedule.html"> Game </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../player/player_list.html"> Player </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../manage/view_profile.html"> Manage </a>
+      </td>
+    </tr>
+  </table>
+  <br />
+  <div class="center">
+    <h1 style="color: black;">Game Statistics Live</h1>
+    <br />
+  </div>
+  <table class="game-stats-live-header">
+    <tr>
+      <td>
+        <img alt="profile pic" width=75 height=75 src="../images/profilepic.jpg">
+      </td>
+      <td>
+        <h1 style="color:black;" id="teamName">-</h1>
+      </td>
+      <td>
+        <p id="time">
+          <strong>Time:</strong> 00:00:00</p>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p id="homeScore" class="score">0</p>
+        <p id="homeName">-</p>
+      </td>
+      <td style="border-left: 1px solid; padding-left: 2vw;">
+        <p id="oppScore" class="score">0</p>
+        <p id="oppName">-</p>
+      </td>
+      <td>
+        <label>Possession</label>
+        <input id="possCheckBox" class="possession" type="checkbox" value="" onclick="handleCheck()">
+        <p id="possTime" style="margin-top: 2vh;">Possession Time: 00:00:00</p>
+      </td>
+  </table>
+  <hr/>
+  <br />
+  <table class="game-stats-live">
+    <tr>
+      <td>
+        <div id="shotsp" class="dropdown">
+          <button class="dropbtn">+</button>
+        </div>
+      </td>
+      <td>
+        <p class="stat-type">Shot On Goals</p>
+      </td>
+      <td>
+        <div id="shotsm" class="dropdown">
+          <button class="dropbtn minus-button">-</button>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div id="gksp" class="dropdown">
+          <button class="dropbtn">+</button>
+        </div>
+      </td>
+      <td>
+        <p class="stat-type">Goal Kicks</p>
+      </td>
+      <td>
+        <div id="gksm" class="dropdown">
+          <button class="dropbtn minus-button">-</button>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div id="throwsp" class="dropdown">
+          <button class="dropbtn">+</button>
+        </div>
+      </td>
+      <td>
+        <p class="stat-type">Throw In</p>
+      </td>
+      <td>
+        <div id="throwsm" class="dropdown">
+          <button class="dropbtn minus-button">-</button>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div id="cksp" class="dropdown">
+          <button class="dropbtn">+</button>
+        </div>
+      </td>
+      <td>
+        <p class="stat-type">Corner Kicks</p>
+      </td>
+      <td>
+        <div id="cksm" class="dropdown">
+          <button class="dropbtn minus-button">-</button>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div id="foulsp" class="dropdown">
+          <button class="dropbtn">+</button>
+        </div>
+      </td>
+      <td>
+        <p class="stat-type">Fouls</p>
+      </td>
+      <td>
+        <div id="foulsm" class="dropdown">
+          <button class="dropbtn minus-button">-</button>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div id="goalsp" class="dropdown">
+          <button class="dropbtn">+</button>
+        </div>
+      </td>
+      <td>
+        <p class="stat-type">Goals</p>
+      </td>
+      <td>
+        <div id="goalsm" class="dropdown">
+          <button class="dropbtn minus-button">-</button>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div id="gap" class="dropdown">
+          <button class="dropbtn" onclick="updatePlayerInfo('', 'gap', '')">+</button>
+        </div>
+      </td>
+      <td>
+        <p class="stat-type">Goals Against</p>
+      </td>
+      <td>
+        <div id="gam" class="dropdown">
+          <button class="dropbtn minus-button" onclick="updatePlayerInfo('', 'gam', '')">-</button>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div id="pksp" class="dropdown">
+          <button class="dropbtn">+</button>
+        </div>
+      </td>
+      <td>
+        <p class="stat-type">Penalty Kick</p>
+      </td>
+      <td>
+        <div id="pksm" class="dropdown">
+          <button class="dropbtn minus-button">-</button>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <div id="appear" class="dropdown">
+          <button class="dropbtn">Appearance</button>
+        </div>
+      </td>
+      <td></td>
+    </tr>
+  </table>
+  <div class="center">
+    <br/>
+    <br/>
+    <button class="button center" id="doneBtn">Done</button>
+  </div>
+  <br/>
+  <br/>
+  <script src="../init.js"></script>
+  <script>
+    var db = firebase.firestore();
+    firebase.firestore().enablePersistence()
+    .catch(function (err) {
+      console.log(err);
+    });
+    var maxTime = 60 * 60 * 24;
+    var startTimeTotal = 0, totalBegin = true;
+    var startTimePoss = 0, prevTime = 0, intervalId, possBegin = true, preContent = "Possession Time: ";
+    function totalTimer(start) {
+      var diff = maxTime - (((Date.now() - start) / 1000) | 0);
+      if (totalBegin == true) {
+        totalBegin = false;
+        startTimeTotal = diff;
+      }
+      return startTimeTotal - diff;
+    }
+    function possTimer(start) {
+      var diff = maxTime - (((Date.now() - start) / 1000) | 0);
+      if (possBegin == true) {
+        possBegin = false;
+        startTimePoss = diff;
+      }
+      return (startTimePoss - diff) + prevTime;
+    }
+
+    function displayTime(preContent, time, display) {
+      var hour = (time / 60 / 60) | 0;
+      var minutes = ((time / 60) % 60) | 0;
+      var seconds = (time % 60) | 0;
+
+      var hour = hour < 10 ? "0" + hour : hour;
+      var minutes = minutes < 10 ? "0" + minutes : minutes;
+      var seconds = seconds < 10 ? "0" + seconds : seconds;
+
+      display.textContent = preContent + hour + ":" + minutes + ":" + seconds;
+    }
+    function pausePossTime() {
+      var time = document.querySelector('#possTime').textContent;
+      var a = time.split(':');
+      time = (+a[1].substring(1)) * 60 * 60 + (+a[2]) * 60 + (+a[3]);
+      prevTime = time;
+      clearInterval(intervalId);
+    }
+    function resumePossTime() {
+      var newStartTime = Date.now();
+      var display = document.querySelector('#possTime');
+      displayTime(preContent, possTimer(newStartTime), display);
+      intervalId = setInterval(function () { displayTime(preContent, possTimer(newStartTime), display); }, 1000);
+    }
+    function handleCheck() {
+      if (document.querySelector('#possCheckBox').checked) {
+        resumePossTime();
+      } else {
+        pausePossTime();
+      }
+    }
+    var gameId = localStorage.getItem('gameId');
+    var groupKey = localStorage.getItem('coachuid');
+    var players = null;
+    var newPlayerInfo = {};
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        var preURL = 'teams/' + groupKey + '/';
+        var database = firebase.database();
+        // var check = database.ref(preURL + '/gameSchedule/' + gameId);
+        // check.on("value", function (snapshot) {
+        firebase.firestore().collection(preURL + 'gameSchedule/').doc(gameId).get().then(function (querySnapshot) {
+          var maxTime = 60 * 60 * 24;
+          var startTimeTotal = 0, totalBegin = true;
+          var startTimePoss = 0, prevTime = 0, intervalId, possBegin = true, preContent = "Possession Time: ";
+          var display = document.querySelector('#time');
+          var start = Date.now();
+          displayTime("", totalTimer(start, display), display);
+          setInterval(function () { displayTime("", totalTimer(start, display), display); }, 1000);
+          var dropdowns = document.querySelectorAll(".dropdown");
+          // var check = database.ref(preURL + '/playerlist');
+          // check.on("value", function (snapshot) {
+          var gameData = querySnapshot.data();
+          firebase.firestore().collection(preURL + 'playerlist/').get().then(function (querySnapshot) {
+            if (querySnapshot != null) {
+              players = querySnapshot.docs;
+              for (var i = 0; i < dropdowns.length; ++i) {
+                var ddId = dropdowns[i].id;
+                if (ddId == "gap" || ddId == "gam") continue;
+                var div = document.createElement('div');
+                div.className = "dropdown-content";
+                var ulist = document.createElement("ul");
+                var j = 0;
+                // for (var key in players) {
+                querySnapshot.forEach(function (doc) {
+                  var player = doc.data();
+                  player.id = doc.id;
+                  player.appeared = false;
+                  newPlayerInfo[doc.id] = player;
+                  if (ulist.innerHTML != "") {
+                    ulist.innerHTML = ulist.innerHTML + '<li  id="' + ddId + j + "img" + '" onclick=updatePlayerInfo(\'' + player.id + '\',\'' + ddId + '\',\'' + j + '\')><img alt="profile pic" src="' + player.profile_pic + '" width=50 height=50><p>' + player.name + '</p><p id="' + ddId + j + '">0</p></li>';
+                  } else {
+                    ulist.innerHTML = '<li id="' + ddId + j + "img" + '" onclick=updatePlayerInfo(\'' + player.id + '\',\'' + ddId + '\',\'' + j + '\')><img id="' + ddId + j + "img" + '"alt="profile pic" src="' + player.profile_pic + '" width=50 height=50><p>' + player.name + '</p><p id="' + ddId + j + '">0</p></li>';
+                  }
+                  ++j;
+                });
+
+                // add in opponent 
+                if (ddId != "appear" && ddId != "goalsm" && ddId != "goalsp" && ddId != "gam" && ddId != "gap") {
+                  ulist.innerHTML = ulist.innerHTML + '<li  id="' + ddId + j + "img" + '" onclick=updatePlayerInfo(\'' + 'opponent' + '\',\'' + ddId + '\',\'' + j + '\')><img alt="profile pic" src="' + '../images/profilepic.jpg' + '" width=50 height=50><p>' + 'opponent' + '</p><p id="' + ddId + j + '">0</p></li>';
+                  ++j;
+                }
+
+                if (j == 1) {
+                  div.style.width = '15vh';
+                }
+
+                div.appendChild(ulist);
+                dropdowns[i].appendChild(div);
+              }
+            }
+          });
+
+          var el = document.querySelector("#homeName");
+          el.textContent = gameData.homeTeam;
+          var el = document.querySelector("#teamName");
+          el.textContent = gameData.homeTeam;
+          var el = document.querySelector("#oppName");
+          el.textContent = gameData.oppTeam;
+        }, function (error) {
+          console.log("Error: " + error.code);
+        });
+      } else {
+        location.href = '../login.html';
+      }
+    });
+    var game = {
+      homeGoals: 0,
+      homeShots: 0,
+      homeRed: 0,
+      homeYel: 0,
+      homeFouls: 0,
+      homePks: 0,
+      homeCks: 0,
+      homeGks: 0,
+      homeThrows: 0,
+      homePoss: "0%",
+      oppGoals: 0,
+      oppShots: 0,
+      oppRed: 0,
+      oppYel: 0,
+      oppFouls: 0,
+      oppPks: 0,
+      oppCks: 0,
+      oppGks: 0,
+      oppThrows: 0,
+      oppPoss: "0%",
+    }
+    function updatePlayerInfo(playerId, id, numId) {
+      var player = newPlayerInfo[playerId];
+      switch (id) {
+        case "shotsp":
+          if (playerId != "opponent") {
+            player.shots = Number(player.shots) + 1;
+            game.homeShots = Number(game.homeShots) + 1;
+          } else {
+            game.oppShots = Number(game.oppShots) + 1;
+          }
+          break;
+        case "shotsm":
+          if (playerId == "opponent") {
+            var subVal = Number(game.oppShots) - 1;
+            if (subVal >= 0) {
+              game.oppShots = subVal;
+            }
+          } else {
+            var subVal = Number(player.shots) - 1;
+            if (subVal >= 0) {
+              player.shots = subVal;
+              game.homeShots = Number(game.homeShots) - 1;
+            }
+          }
+          break;
+        case "gksp":
+          if (playerId == "opponent") {
+            game.oppGks = Number(game.oppGks) + 1;
+          } else {
+            player.gks = Number(player.gks) + 1;
+            game.homeGks = Number(game.homeGks) + 1;
+          }
+          break;
+        case "gksm":
+          if (playerId == "opponent") {
+            var subVal = Number(game.oppGks) - 1;
+            if (subVal >= 0) {
+              game.oppGks = subVal;
+            }
+          } else {
+            var subVal = Number(player.gks) - 1;
+            if (subVal >= 0) {
+              player.gks = subVal;
+              game.homeGks= Number(game.homeGks) - 1;
+            }
+          }
+          break;
+        case "throwsp":
+          if (playerId == "opponent") {
+            game.oppThrows = Number(game.oppThrows) + 1;
+          } else {
+            player.throws = Number(player.throws) + 1;
+            game.homeThrows = game.homeThrows + 1;
+          }
+          break;
+        case "throwsm":
+          if (playerId == "opponent") {
+            var subVal = Number(game.oppThrows) - 1;
+            if (subVal >= 0) {
+              game.oppThrows = subVal;
+            }
+          } else {
+            var subVal = Number(player.throws) - 1;
+            if (subVal >= 0) {
+              player.throws = subVal;
+              game.throws = game.throws - 1;
+            }
+          }
+          break;
+        case "cksp":
+          if (playerId == "opponent") {
+            game.oppCks = Number(game.oppCks) + 1;
+          } else {
+            player.cks = Number(player.cks) + 1;
+            game.homeCks = Number(game.homeCks) + 1;
+          }
+          break;
+        case "cksm":
+          if (playerId == "opponent") {
+            var subVal = Number(game.oppCks) - 1;
+            if (subVal >= 0) {
+              game.oppCks = subVal;
+            }
+          } else {
+            var subVal = Number(player.cks) - 1;
+            if (subVal >= 0) {
+              player.cks = subVal;
+              game.homeCks = Number(game.homeCks) - 1;
+            }
+          }
+          break;
+        case "foulsp":
+          if (playerId == "opponent") {
+            game.oppFouls = Number(game.oppFouls) + 1;
+          } else {
+            player.fouls = Number(player.fouls) + 1;
+            // todo: red vs yellow
+            game.homeFouls = Number(game.homeFouls) + 1;
+          }
+          break;
+        case "foulsm":
+          if (playerId == "opponent") {
+            var subVal = Number(game.oppFouls) - 1;
+            if (subVal >= 0) {
+              game.oppFouls = subVal;
+            }
+          } else {
+            var subVal = Number(player.fouls) - 1;
+            if (subVal >= 0) {
+              player.fouls = subVal;
+              // todo: red vs yellow
+              game.homeFouls = Number(game.homeFouls) - 1;
+            }
+          }
+          break;
+        case "goalsp":
+          game.homeGoals= Number(game.homeGoals) + 1;
+          player.goals = Number(player.goals) + 1;
+          var el = document.querySelector("#homeScore");
+          el.textContent = game.homeGoals;
+          break;
+        case "goalsm":
+          var subVal = Number(player.goals) - 1;
+          if (subVal >= 0) {
+            game.homeGoals = Number(game.homeGoals) - 1;
+            player.goals = subVal;
+            var el = document.querySelector("#homeScore");
+            el.textContent = game.homeGoals;
+          }
+          break;
+        case "gap":
+          game.oppGoals = Number(game.oppGoals) + 1;
+          var el = document.querySelector("#oppScore");
+          el.textContent = game.oppGoals;
+          break;
+        case "gam":
+          var subVal = Number(game.oppGoals) - 1;
+          if (subVal >= 0) {
+            game.oppGoals = subVal;
+            var el = document.querySelector("#oppScore");
+            el.textContent = game.oppGoals;
+          }
+          break;
+        case "pksp":
+          if (playerId == "opponent") {
+            game.oppPks = Number(game.oppPks) + 1;
+          } else {
+            player.pks = Number(player.pks) + 1;
+            game.homePks = Numer(game.homePks) + 1;
+          }
+          break;
+        case "pksm":
+          if (playerId == "opponent") {
+            var subVal = Number(game.oppPks) - 1;
+            if (subVal >= 0) {
+              game.oppPks = subVal;
+            }
+          } else {
+            var subVal = Number(player.pks) - 1;
+            if (subVal >= 0) {
+              player.pks = subVal;
+              game.homePks = Numer(game.homePks) - 1;
+            }
+          }
+          break;
+        case "appear":
+          player.appeared = !player.appeared;
+          if (player.appeared) {
+            player.games = Number(player.games) + 1;
+          } else {
+            player.games = Number(player.games) - 1;
+          }
+          var el = document.querySelector("#" + id + numId + "img");
+          el.style.backgroundColor = "orange";
+          break;
+      }
+
+      if (id != "gap" && id != "gam") {
+        var el = document.querySelector("#" + id + numId);
+        if (id.substring(id.length - 1) == "p") {
+          el.textContent = Number(el.textContent) + 1;
+          el = document.querySelector("#" + id.substring(0, id.length - 1) + "m" + numId);
+          el.textContent = Number(el.textContent) + 1;
+        } else if (id.substring(id.length - 1) == "m") {
+          if (Number(el.textContent - 1 >= 0)) {
+            el.textContent = Number(el.textContent) - 1;
+            el = document.querySelector("#" + id.substring(0, id.length - 1) + "p" + numId);
+            el.textContent = Number(el.textContent) - 1;
+          }
+        }
+      }
+    }
+
+    document.getElementById("doneBtn").onclick = function () {
+      for (var key in newPlayerInfo) {
+        player = newPlayerInfo[key];
+        firebase.firestore().collection('teams/' + groupKey + "/playerlist/").doc(key).update({
+          games: player.games,
+          goals: player.goals,
+          shots: player.shots,
+          fouls: player.fouls,
+          pks: player.pks,
+          cks: player.cks,
+          gks: player.gks,
+          throws: player.throws
+        });
+      }
+      var possTime = document.querySelector('#possTime').textContent.split(':');
+      var time = document.querySelector('#time').textContent.split(':');
+      time = Number(time[0]) * 60 * 60 + Number(time[1]) * 60 + Number(time[2]);
+      possTime= Number(possTime[1]) * 60 * 60 + Number(possTime[2]) * 60 + Number(possTime[3]);
+      var homePoss = 0;
+      var oppPoss = 0;
+      if (time != 0) {
+        homePoss = Math.round(possTime/time*100);
+        var oppPoss = 100 - homePoss;
+      } 
+
+      firebase.firestore().collection('teams/' + groupKey + "/gameSchedule/").doc(gameId).update({
+        homeGoals: game.homeGoals,
+        homeShots: game.homeShots,
+        homeRed: game.homeRed,
+        homeYel: game.homeYel,
+        homeFouls: game.homeFouls,
+        homePks: game.homePks,
+        homeCks: game.homeCks,
+        homeGks: game.homeGks,
+        homeThrows: game.homeThrows,
+        homePoss: homePoss + "%",
+        oppGoals: game.oppGoals,
+        oppShots: game.oppShots,
+        oppRed: game.oppRed,
+        oppYel: game.oppYel,
+        oppFouls: game.oppFouls,
+        oppPks: game.oppPks,
+        oppCks: game.oppCks,
+        oppGks: game.oppGks,
+        oppThrows: game.oppThrows,
+        oppPoss: oppPoss + "%"
+      })
+      .then(function() {
+        firebase.firestore().collection('teams/' + groupKey + "/stats").get().then(function(querySnapshot) {
+          var stats = querySnapshot.docs;
+          querySnapshot.forEach(function (doc) {
+            stats = doc.data();
+            console.log(stats);
+          });
+          if (stats.length == 0) {
+            stats = {
+              goalsFor: 0,
+              goalsAgainst: 0,
+              wins: 0,
+              losses: 0,
+              ties: 0
+            };
+          }
+          stats.goalsAgainst = (stats.goalsAgainst) + game.oppGoals;
+          stats.goalsFor = (stats.goalsFor) + game.homeGoals;
+          if (game.homeGoals > game.oppGoals) {
+            stats.wins = (stats.wins) + 1;
+          } else if (game.homeGoals < game.oppGoals) {
+            stats.losses = (stats.losses) + 1;
+          } else {
+            stats.ties = (stats.ties) + 1;
+          }
+          firebase.firestore().collection('teams/' + groupKey + "/stats").doc("0").set({
+            goalsAgainst: stats.goalsAgainst,
+            goalsFor: stats.goalsFor,
+            wins: stats.wins,
+            losses: stats.losses,
+            ties: stats.ties
+          })
+          .then(function() {
+            location.href = 'game_schedule.html';
+          });
+        });
+      });
+    };
+
+  </script>
+</body>
+</html>

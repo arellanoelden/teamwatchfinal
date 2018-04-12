@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- File transfer size: 212KB
+       Load time: 6.30 s
+       DOM: 2.14s
+  -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Sections, Style and Meta Data">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Watch</title>
+  <meta name="theme-color" content="#8bc34a"/>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+  <body>
+  <script src="sw.js"></script>
+  <script src="app.js"></script>
+  <script src="firebase.js"></script>
+  <script src="firebase-firestore.js"></script>
+  <script src="init.js"></script>
+  <script>
+    var db = firebase.firestore();
+
+    // If the user is logged in, redirect to home page.
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        console.log(user);
+        location.href = 'index.html';
+      }
+    });
+  </script>
+  <div class="header">
+    <h1>Team Watch</h1>
+  </div>
+  <table id="header-table">
+    <tr>
+      <td class="header-td"><a class="header-link" href="./login.html"> Home </a></td>
+      <td class="header-td"><a class="header-link" href="./login.html"> Game </a></td>
+      <td class="header-td"><a class="header-link" href="./login.html"> Player </a></td>
+      <td class="header-td"><a class="header-link" href="./login.html"> Manage </a></td>
+    </tr>
+    </table>
+    <table class="playerinfo">
+      <tr>
+        <td colspan="2"><img style="margin-left:70%;" src="images/soccer_ball.png" alt="soccer ball"></td>
+      </tr>
+      <tr>
+        <td><label>User ID(email):</label></td>
+        <td><input type="text" name="email" id="email"></td>
+      </tr>
+      <tr>
+        <td><label>Password:</label></td>
+        <td><input type="text" name="pass" id="pass"></td>
+      </tr>
+    </table>
+    <p class="p-error">User ID or Password is incorrect.<p>
+    <div class="center" style="border-radius:0.25rem;">
+      <input style="width:12rem; border-radius:0.25rem;" type="submit" value="Log in" class="button" onclick="location.href='index.html'" id="login">
+    </div>
+    <div class="center" style="border-radius:0.25rem;">
+      <input style="width:12rem; border-radius:0.25rem;" type="submit" value="Sign up" class="button" onclick="location.href='sign_up.html'">
+    </div>
+    
+    <script>
+      document.getElementById("login").onclick = function() {
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("pass").value;
+        var errorEl = document.getElementsByClassName("p-error")[0];
+        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+
+          console.log("login error");
+          errorEl.style.visibility = "visible";
+          errorEl.textContent = errorMessage;
+        });
+        db.enablePersistence()
+          .then(function() {
+           // Initialize Cloud Firestore through firebase
+          })
+          .catch(function(err) {
+          if (err.code == 'failed-precondition') {
+          // Multiple tabs open, persistence can only be enabled
+          // in one tab at a a time.
+          // ...
+          } else if (err.code == 'unimplemented') {
+          // The current browser does not support all of the
+          // features required to enable persistence
+          // ...
+          }
+        });
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            location.href = 'index.html';
+          } 
+        });
+        
+      }
+    
+    </script>
+  </body>
+</html>

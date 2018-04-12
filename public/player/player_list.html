@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- File transfer size:13KB
+       Load time: 4.38s
+       DOM: 2.23s
+  -->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Sections, Style and Meta Data">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Watch</title>
+  <meta name="theme-color" content="#8bc34a" />
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/main.css">
+  <style type="text/css">
+    .container1 {
+      width: 30vw;
+      min-width: 15rem;
+      height: 7rem;
+      margin: auto;
+      display: inline-block;
+      margin-right: 0.3vw;
+      border: 0.05rem solid black;
+    }
+
+    .container2 {
+      width: 30vw;
+      min-width: 15rem;
+      height: 7rem;
+      display: inline-block;
+      border: 0.05rem solid black;
+    }
+
+    .imageclass {
+      float: left;
+      width: 25%;
+      height: 100%;
+    }
+
+    .textclass {
+      float: left;
+      width: 30%;
+      margin-top: 5%;
+      margin-left: 0%;
+      display: inline;
+      text-align: left;
+      margin-left: 2%;
+    }
+
+    .view {
+      float: right;
+      width: 4rem;
+      display: block;
+      margin-top: 3%;
+      margin-right: 3%;
+
+    }
+
+    .number {
+      float: left;
+      margin-left: 0%;
+      margin-top: 15%;
+    }
+  </style>
+</head>
+
+<body>
+  <script src="../firebase.js"></script>
+  <script src="../firebase-firestore.js"></script>
+  <div class="header">
+    <h1>Team Watch</h1>
+  </div>
+  <table id="header-table">
+    <tr>
+      <td class="header-td">
+        <a class="header-link" href="../index.html"> Home </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../game/game_schedule.html"> Game </a>
+      </td>
+      <td class="header-td active">
+        <a class="header-link" href="../player/player_list.html"> Player </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../manage/view_profile.html"> Manage </a>
+      </td>
+    </tr>
+  </table>
+  <div id="addPlayerWrapper" hidden style="margin-right:1.5vw; margin-top:0.5vh;">
+    <div style="float:right; border-radius:0.25rem;">
+      <input style="border-radius:0.25rem;" type="submit" id="addPlayer" value="Add player" class="button" onclick="location.href='add_player.html'">
+    </div>
+  </div>
+  <div id="player_list" style="width:100%; text-align:center; margin-top: 3vh; clear:both;">
+  </div>
+  <script src="../init.js"></script>
+  <script>
+    var db = firebase.firestore();
+    firebase.firestore().enablePersistence()
+      .catch(function (err) {
+        console.log(err);
+      });
+    // If the user is logged in, redirect to home page.
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (!user) {
+        location.href = '../login.html';
+      }
+      db.collection("users").doc(user.uid).get().then(function (querySnapshot) {
+        var groupKey = querySnapshot.data().groupKey;
+        showAddPlayerButton(querySnapshot.data().usertype);
+        db.collection("teams/" + groupKey + "/playerlist/").get().then(function (querySnapshot) {
+          var div = "";
+          var nextclass = "container1";
+          var list = document.getElementById('player_list');
+          var index = 0;
+          querySnapshot.forEach(function (doc) {
+            var playerlist = doc.data();
+            div = document.createElement('div');
+            div.className = nextclass;
+            nextclass = nextclass == "container1" ? "container2" : "container1";
+            var picPath = '../images/profilepic.jpg';
+            if (playerlist.profile_pic) {
+              picPath = playerlist.profile_pic;
+            }
+            div.innerHTML = '<img id="profile_pic' + index + '" alt="profile pic" class="imageclass" src="' + picPath + '"><span class="textclass"> <strong>' + playerlist.name + '</strong><br/><b class="number" id="number">' + playerlist.number + '</b></span><p class="view"><input style="width:100%; border-radius:0.25rem;" type="submit" value="View" class="button view" class="view" onclick="location.href=' + "'view_player.html" + "'" + ';localStorage.setItem(' + "'playerId','" + doc.id + "'" + ');"></p>';
+
+            list.appendChild(div);
+            if (div.className == "container2") {
+              var br = document.createElement('br');
+              list.appendChild(br);
+              fillInPicture(playerlist, index);
+            }
+            ++index;
+          });
+        });
+      });
+    });
+    function fillInPicture(player, index) {
+      if (player.profile_pic) {
+        var img = document.getElementById('profile_pic' + index);
+        img.src = player.profile_pic;
+      }
+    }
+    function showAddPlayerButton(usertype) {
+      if (usertype == "coach") {
+        document.getElementById("addPlayerWrapper").hidden = false;
+      }
+    }
+  </script>
+</body>
+</html>

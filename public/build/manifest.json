@@ -1,0 +1,25 @@
+{
+  "short_name": "Team Watch",
+  "name": "Team Watch",
+  "icons": [
+    {
+      "src": "images/soccer_ball.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "images/soccer_ball.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "images/soccer_ball.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "index.html",
+  "background_color": "#8bc34a",
+  "theme_color": "#8bc34a",
+  "display": "standalone"
+}

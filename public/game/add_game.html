@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- File transfer size: 3.7KB
+       Load time: 4.22s
+       DOM: 2.19s
+  -->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Sections, Style and Meta Data">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Watch</title>
+  <meta name="theme-color" content="#8bc34a"/>
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body>
+  <script src="../firebase.js"></script>
+  <script src="../firebase-firestore.js"></script>
+  <!--<script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCfMC6E9eNfRbX7Zy--2UFkJkn3ffpgji8",
+      authDomain: "cse134bfinal.firebaseapp.com",
+      databaseURL: "https://cse134bfinal.firebaseio.com",
+      projectId: "cse134bfinal",
+      storageBucket: "cse134bfinal.appspot.com",
+      messagingSenderId: "329284980436"
+    };
+    firebase.initializeApp(config);
+    // If the user is logged in, redirect to home page.
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (!user) {
+        location.href = '../login.html';
+      }
+    });
+  </script>-->
+  <div class="header">
+    <h1>Team Watch</h1>
+  </div>
+  <table id="header-table">
+    <tr>
+      <td class="header-td">
+        <a class="header-link" href="../index.html"> Home </a>
+      </td>
+      <td class="header-td active">
+        <a class="header-link" href="game_schedule.html"> Game </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../player/player_list.html"> Player </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../manage/view_profile.html"> Manage </a>
+      </td>
+    </tr>
+  </table>
+
+  <br/>
+  <h1 style="color: black;">Add a New Game</h1>
+  <br/>
+
+  <table class="playerinfo">
+    <tr>
+      <td>
+        <label>Opponent Team:</label>
+      </td>
+      <td>
+        <input type="text" name="opponent" id="opponent">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Date:</label>
+      </td>
+      <td>
+        <input type="date" name="date" id="date">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Time:</label>
+      </td>
+      <td>
+        <input type="time" name="time" id="time">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Location:</label>
+      </td>
+      <td>
+        <input type="text" name="loc" id="loc">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Status:</label>
+      </td>
+      <td>
+        <input id="homeOption" type="radio" name="homeOrAwayType" value="Home" checked="checked">
+        <label>Home</label>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label></label>
+      </td>
+      <td>
+        <input id="awayOption" type="radio" name="homeOrAwayType" value="Away">
+        <label>Away</label>
+      </td>
+    </tr>
+  </table>
+
+  <div class="center" style="border-radius:0.25rem;">
+    <input id="addGame" style="width:12rem; border-radius:0.25rem;" type="submit" value="Add Game" class="button">
+  </div>
+  <script src="../init.js"></script>
+  <script>
+     var db = firebase.firestore();
+      firebase.firestore().enablePersistence()
+      .catch(function (err) {
+        console.log(err);
+      });
+    function addGame(user, groupKey, gameInfo) {
+      db.collection('teams/' + groupKey + "/gameSchedule/").add({
+        homeTeam: gameInfo.homeTeam,
+        oppTeam: gameInfo.oppTeam,
+        date: gameInfo.date,
+        loc: gameInfo.loc,
+        homeOrAway: gameInfo.homeOrAway
+      }).then(function() {
+        location.href = 'game_schedule.html';
+      });
+    }
+
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        document.getElementById("addGame").onclick = function () {
+          var gameInfo = {
+            homeTeam: "",
+            oppTeam: "",
+            date: "",
+            loc: "",
+            homeOrAway: "",
+          };
+          // var check = firebase.database().ref("users/" + user.uid);
+          // check.on("value", function (snapshot) {
+          firebase.firestore().collection("users").doc(user.uid).get().then( function(querySnapshot) {
+            gameInfo.homeTeam = querySnapshot.data().teamName;
+            gameInfo.oppTeam = document.getElementById("opponent").value;
+            var dateVal = document.getElementById("date").value;
+            var timeVal = document.getElementById("time").value;
+            var date = new Date((dateVal + " " + timeVal).replace(/-/g, "/"));
+            gameInfo.date = Math.round(date.getTime() / 1000);
+
+            gameInfo.loc = document.getElementById("loc").value;
+            var homeAwayEls = document.getElementsByName("homeOrAwayType");
+            for (var i = 0; i < homeAwayEls.length; ++i) {
+              if (homeAwayEls[i].checked == true) {
+                gameInfo.homeOrAway = homeAwayEls[i].value;
+              }
+            }
+            //editJSON(data,gameInfo);
+            addGame(user,querySnapshot.data().groupKey, gameInfo);
+          });
+        }
+      } else {
+        location.href = '../login.html';
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- File transfer size: 3.8KB
+       Load time: 4.30s 
+       DOM: 2.23s
+  -->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Sections, Style and Meta Data">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Watch</title>
+  <meta name="theme-color" content="#8bc34a" />
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body>
+  <script src="../firebase.js"></script>
+  <script src="../firebase-firestore.js"></script>
+  <div class="header">
+    <h1>Team Watch</h1>
+  </div>
+  <table id="header-table">
+    <tr>
+      <td class="header-td">
+        <a class="header-link" href="../index.html"> Home </a>
+      </td>
+      <td class="header-td active">
+        <a class="header-link" href="game_schedule.html"> Game </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../player/player_list.html"> Player </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="../manage/view_profile.html"> Manage </a>
+      </td>
+    </tr>
+  </table>
+
+  <br/>
+  <h1 style="color: black;">Edit Game</h1>
+  <br/>
+
+  <table class="playerinfo">
+    <tr>
+      <td>
+        <label>Opponent Team:</label>
+      </td>
+      <td>
+        <input type="text" name="opponent" id="oppTeam">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Date:</label>
+      </td>
+      <td>
+        <input type="date" name="date" id="date">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Time:</label>
+      </td>
+      <td>
+        <input type="time" name="time" id="time">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Location:</label>
+      </td>
+      <td>
+        <input type="text" name="loc" id="loc">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Status:</label>
+      </td>
+      <td>
+        <input id="homeOption" class="homeOrAway" type="radio" name="homeOrAwayType" value="Home">
+        <label>Home</label>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label></label>
+      </td>
+      <td>
+        <input id="awayOption" class="homeOrAway" type="radio" name="homeOrAwayType" value="Away">
+        <label>Away</label>
+      </td>
+    </tr>
+  </table>
+
+  <div class="center" style="border-radius:0.25rem;">
+    <input id="editGame" style="width:12rem; border-radius:0.25rem;" type="submit" value="Edit" class="button" onclick="location.href='game_schedule.html'">
+  </div>
+  <div class="center" style="border-radius:0.25rem;">
+    <input id="deleteGame" style="width:12rem; border-radius:0.25rem;" type="submit" value="Delete" class="redbutton" onclick="location.href='game_schedule.html'">
+  </div>
+  <script src="../init.js"></script>
+  <script>
+    var db = firebase.firestore();
+    firebase.firestore().enablePersistence()
+      .catch(function (err) {
+        console.log(err);
+      });
+    firebase.auth().onAuthStateChanged(function (user) {
+      var game = null;
+      if (user) {
+        var gameId = localStorage.getItem('gameId');
+        var groupKey = localStorage.getItem('coachuid');
+        var preURL = 'teams/' + groupKey + '/gameSchedule/';
+        firebase.firestore().collection(preURL).doc(gameId).get().then(function (querySnapshot) {
+          game = querySnapshot.data();
+          game.time = getDateStr(game.date);
+          game.date = getDateStr(game.date, true);
+          var els = document.querySelectorAll("td > input");
+          for (var i = 0; i < els.length - 2; ++i) {
+            var id = els[i].getAttribute("id");
+            els[i].value = game[id];
+          }
+          var els = document.querySelectorAll(".homeOrAway");
+          for (var i = 0; i < els.length; ++i) {
+            if (els[i].value == game["homeOrAway"]) {
+              els[i].checked = "checked";
+            }
+          }
+        });
+
+        document.getElementById("deleteGame").onclick = function () {
+          if (game.homeGoals != undefined) {
+            firebase.firestore().collection('teams/' + groupKey + "/stats").get().then(function(querySnapshot) {
+              var stats = querySnapshot.docs;
+              querySnapshot.forEach(function (doc) {
+                stats = doc.data();
+              });
+              stats.goalsagainst = (stats.goalsagainst) - game.oppgoals;
+              stats.goalsfor = (stats.goalsfor) - game.homegoals;
+              if (game.homegoals > game.oppgoals) {
+                stats.wins = (stats.wins) - 1;
+              } else if (game.homegoals < game.oppgoals) {
+                stats.losses = (stats.losses) - 1;
+              } else {
+                stats.ties = (stats.ties) - 1;
+              }
+              firebase.firestore().collection('teams/' + groupKey + "/stats").doc("0").set({
+                goalsAgainst: stats.goalsAgainst,
+                goalsFor: stats.goalsFor,
+                wins: stats.wins,
+                losses: stats.losses,
+                ties: stats.ties
+              }).then(function () {
+                deleteGame(groupKey, gameId);
+              });
+
+
+            });
+          } else {
+            deleteGame(groupKey, gameId);
+          }
+        }
+
+        document.getElementById("editGame").onclick = function () {
+          var gameInfo = {
+            oppTeam: "",
+            time: "",
+            loc: "",
+            homeOrAway: "",
+            score: ""
+          };
+          gameInfo.oppTeam = document.getElementById("oppTeam").value;
+          gameInfo.time = document.getElementById("time").value;
+          gameInfo.date = document.getElementById("date").value;
+          gameInfo.loc = document.getElementById("loc").value;
+          var homeAwayEls = document.getElementsByName("homeOrAwayType");
+          for (var i = 0; i < homeAwayEls.length; ++i) {
+            if (homeAwayEls[i].checked == true) {
+              gameInfo.homeOrAway = homeAwayEls[i].value;
+            }
+          }
+          writeGameData(preURL, gameInfo);
+        }
+      } else {
+        location.href = '../login.html';
+      }
+    });
+
+    function writeGameData(preURL, gameInfo) {
+      var gameId = localStorage.getItem('gameId');
+      var dateVal = document.getElementById("date").value;
+      var timeVal = document.getElementById("time").value;
+      var date = new Date((dateVal + " " + timeVal).replace(/-/g, "/"));
+      gameInfo.date = Math.round(date.getTime() / 1000);
+      firebase.firestore().collection(preURL).doc(gameId).update({
+        oppTeam: gameInfo.oppTeam,
+        date: gameInfo.date,
+        homeOrAway: gameInfo.homeOrAway,
+        loc: gameInfo.loc
+      }).then(function () {
+        location.href = "game_schedule.html";
+      });
+    }
+
+    function getDateStr(ts, dateStr) {
+      var date = new Date(ts * 1000);
+      var cDate = date.getDate();
+      var cMonth = date.getMonth() + 1;
+      var cYear = date.getFullYear();
+      var cHour = date.getHours();
+      var cMin = date.getMinutes();
+      var cSec = date.getSeconds();
+      cMin = cMin < 10 ? '0' + cMin : cMin;
+      cHour = cHour < 10 ? '0' + cHour : cHour;
+      cMonth = cMonth < 10 ? '0' + cMonth : cMonth;
+      cDate = cDate < 10 ? '0' + cDate : cDate;
+      if (dateStr) {
+        return cYear + "-" + cMonth + "-" + cDate;
+      } else {
+        return cHour + ":" + cMin;
+      }
+    }
+
+    function deleteGame(uid, gameId) {
+      db.collection("teams/" + uid + "/gameSchedule/").doc(gameId).delete().then(function () {
+      }).then(function (error) {
+        location.href = "game_schedule.html";
+      });
+    }
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Sections, Style and Meta Data">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Watch</title>
+  <meta name="theme-color" content="#8bc34a" />
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+  <script src="sw.js"></script>
+  <script src="app.js"></script>
+  <script src="firebase.js"></script>
+  <script src="firebase-firestore.js"></script>
+  <script src="init.js"></script>
+  <div class="header">
+    <h1>Team Watch</h1>
+  </div>
+  <table id="header-table">
+    <tr>
+      <td class="header-td">
+        <a class="header-link" href="./index.html"> Home </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="./game/game_schedule.html"> Game </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="./player/player_list.html"> Player </a>
+      </td>
+      <td class="header-td">
+        <a class="header-link" href="./manage/view_profile.html"> Manage </a>
+      </td>
+    </tr>
+  </table>
+  <br/>
+  <br/>
+  <br/>
+  <h2 class="center">Sorry you need to be online to do this action.</h2>
+  <script>
+    firebase.firestore().enablePersistence()
+      .catch(function (err) {
+        console.log(err);
+      });
+  </script>
+</body>
+
+</html>
